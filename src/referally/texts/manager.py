@@ -21,7 +21,6 @@ class TextFormatter:
         self,
         path: str,
         lang_code: str = Config.DEFAULT_LANG,
-        skip_md_check: bool = False,
         /,
         **kwargs
     ) -> None:
@@ -30,8 +29,6 @@ class TextFormatter:
 
         :param path: Path of the text from JSON's
         example: ["text"]["subtext"] = "text:subtext"
-        :param skip_md_check: Whether Markdown check of the text
-        should be skipped
         :param kwargs: Arguments that required in the text
         """
 
@@ -41,14 +38,13 @@ class TextFormatter:
             self.text = self.text[name]
 
         for element in kwargs:
-            self.text = self.text.replace(
-                "{" f"{element}" "}",
+            kwargs[element] = re.sub(
+                r"([_*\[\]()~`>#+\-=|{}.!])",
+                r"\\\1",
                 str(kwargs[element])
             )
 
-        if not skip_md_check:
-            self.text = re.sub(
-                r"([_*\[\]()~`>#+\-=|{}.!])",
-                r"\\\1",
-                self.text
+            self.text = self.text.replace(
+                "{" f"{element}" "}",
+                kwargs[element]
             )

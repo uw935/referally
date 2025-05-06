@@ -1,4 +1,11 @@
-from .admin import AdminKeyboard
+from .base import (
+    BackKeyboard,
+    PaginationKeyboard
+)
+from .admin import (
+    AdminMenuKeyboard,
+    AdminSettingsKeyboard
+)
 from .methods import (
     create_button,
     create_markup
@@ -8,5 +15,8 @@ from .methods import (
 __all__ = (
     "create_button",
     "create_markup",
-    "AdminKeyboard"
+    "AdminMenuKeyboard",
+    "AdminSettingsKeyboard",
+    "BackKeyboard",
+    "PaginationKeyboard"
 )
