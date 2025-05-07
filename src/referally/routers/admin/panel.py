@@ -7,9 +7,9 @@ from aiogram.types import (
     CallbackQuery
 )
 
-from ...keyboard import *
 from ...states import AdminState
 from ...texts import TextFormatter
+from ...keyboard import AdminMenuKeyboard
 from . import (
     users_list
 )

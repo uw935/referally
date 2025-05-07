@@ -46,13 +46,9 @@ class AdminSettingsKeyboard(Keyboard):
         )
 
 
-class AdminUserListKeyboard(Keyboard):
-    """
-    Admin users list keyboard
-    """
-
-    def __init__():
-        ...
+#    TODO допиши admin users list тут возвращается markup, а не buttons + statistics
+        # TODO сделай потом текст нормальный
+        # TODO и все. кмить admin-ux и приступай к user-ux
 
 class AdminMenuKeyboard(Keyboard):
     """
@@ -77,7 +73,7 @@ class AdminMenuKeyboard(Keyboard):
                         "keyboard:users_list",
                         self.lang_code
                     ).text,
-                    "USERS_LIST"
+                    "USERS_LIST_0"
                 ),
             ),
             (

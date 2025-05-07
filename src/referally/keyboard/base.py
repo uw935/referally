@@ -115,6 +115,15 @@ class PaginationKeyboard(Keyboard):
                     if all_pages > 1 else "DO_NOTHING"
                 )
             ),
+            (
+                create_button(
+                    TextFormatter(
+                        "keyboard:back",
+                        self.lang_code
+                    ).text,
+                    "BACK"
+                ),
+            )
         )
 
 

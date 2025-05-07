@@ -6,7 +6,8 @@ from aiogram import (
 
 from ...texts import TextFormatter
 from ...keyboard import (
-    BackKeyboard,
+    create_markup,
+    create_button,
     PaginationKeyboard
 )
 
@@ -24,7 +25,17 @@ async def users_list_callback_handler(callback: CallbackQuery) -> None:
 
     users_count = 1
 
-    buttons = (...)
+    buttons = (
+        (
+            create_button(
+                "user №1",
+                "USER_VIEW_1"
+            ),
+        ),
+    )
+
+    # TODO : если страница №1 - показывает кол-во юзеров в боте
+    # TODO если другая - ничего
 
     await callback.message.edit_text(
         TextFormatter(
@@ -36,7 +47,7 @@ async def users_list_callback_handler(callback: CallbackQuery) -> None:
             callback.from_user.language_code,
             buttons,
             "USERS_LIST_",
-            callback.data[11:],
-            3
-        )
+            int(callback.data[11:]),
+            1
+        ).markup
     )
