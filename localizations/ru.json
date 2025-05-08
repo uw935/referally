@@ -1,0 +1,35 @@
+{
+    "admin": {
+        "startup": "бот запущен",
+        "shutdown": "бот выключился",
+        "users_list": {
+            "text": "*Список пользователей*\n\nЗдесь можно просмотреть каждого"
+        },
+        "statistics": "*Статистика*\n\nОбщее количество: {users_count} пользователей\nВсего привлечено: {new_subscribers} подписчиков\n\nРейтинг\n{users_rating}",
+        "user_view": {
+            "text": "*Пользователь №{user_id}*\n\nTelegram ID: {tgid}\nИмя: {full_name}\nЮзернейм: {username}\nЗарегистрирован: {timestamp}"
+        },
+        "menu": "*Главное меню*\n\n_Рефералли\\. Спасибо за установку_"
+    },
+    "error": {
+        "bot_no_channel": "К сожалению, администратор канала ещё не присоединил бота",
+        "no_text": "К сожалению, произошло ошибка при отображении текста"
+    },
+    "keyboard": {
+        "list": {
+            "back": "Назад",
+            "forward": "Вперед"
+        },
+        "back": "Назад",
+        "turn_on": "Включить",
+        "turn_off": "Выключить",
+        "contact_support": "Связаться с поддержкой",
+        "statistics": "Статистика",
+        "users_list": "Список пользователей",
+        "settings": "Настройки",
+        "captcha_settings": "Настройки Captcha",
+        "text_settings": "Настройки текста",
+        "reset_data": "Сбросить данные",
+        "copyrights": "О проекте"
+    }
+}
