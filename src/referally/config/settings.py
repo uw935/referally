@@ -53,5 +53,5 @@ class Config:
 
     BOT_TOKEN: str = os.environ["BOT_TOKEN"]
     ADMIN_ID: int = int(os.environ["TELEGRAM_ADMIN_ID"])
-    DEFAULT_LANG: str = os.environ["DEFAULT_LANG"]
+    DEFAULT_LANG: str = os.environ["DEFAULT_LANG"].lower()
     CAROUSEL_LIMIT: int = 5

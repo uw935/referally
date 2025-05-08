@@ -22,7 +22,7 @@ class LocaleFileParser:
         """
         Parse localizations from base folder
 
-        Maybe in the future this guy 
+        Maybe in the future this guy
         will also check structure of the file
         """
 

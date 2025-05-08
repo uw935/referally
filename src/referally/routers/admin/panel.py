@@ -11,12 +11,14 @@ from ...states import AdminState
 from ...texts import TextFormatter
 from ...keyboard import AdminMenuKeyboard
 from . import (
-    users_list
+    users_list,
+    statistics
 )
 
 
 router = Router()
 router.include_router(users_list.router)
+router.include_router(statistics.router)
 
 
 async def send_menu_message(
@@ -39,7 +41,6 @@ async def send_menu_message(
     reply_markup = AdminMenuKeyboard(
         message.from_user.language_code
     ).markup
-
 
     if is_edit:
         await message.edit_text(text, reply_markup=reply_markup)

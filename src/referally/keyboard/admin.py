@@ -46,10 +46,6 @@ class AdminSettingsKeyboard(Keyboard):
         )
 
 
-#    TODO допиши admin users list тут возвращается markup, а не buttons + statistics
-        # TODO сделай потом текст нормальный
-        # TODO и все. кмить admin-ux и приступай к user-ux
-
 class AdminMenuKeyboard(Keyboard):
     """
     Administaror menu keyboard
@@ -64,7 +60,7 @@ class AdminMenuKeyboard(Keyboard):
                         "keyboard:statistics",
                         self.lang_code
                     ).text,
-                    "STATISTICS"
+                    "ADMIN_STATISTICS"
                 ),
             ),
             (
@@ -84,12 +80,5 @@ class AdminMenuKeyboard(Keyboard):
                     ).text,
                     url="https://t.me/+FOsRd3bAe7o3YzFi"
                 ),
-                create_button(
-                    TextFormatter(
-                        "keyboard:github",
-                        self.lang_code
-                    ).text,
-                    url="https://github.com/uw935/referally/"
-                ),
-            ),
+            )
         )

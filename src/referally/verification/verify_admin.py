@@ -22,11 +22,6 @@ class AdminVerification:
                 if args[0] is not None:
                     user: User = args[0].from_user
 
-                    # If there is no state
-                    # then just leave
-                    if "state" not in kwargs.keys():
-                        return
-
                     if user.id == Config.ADMIN_ID:
                         await kwargs["state"].set_state(AdminState.MENU)
                         return

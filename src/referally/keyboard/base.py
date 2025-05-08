@@ -24,7 +24,7 @@ class Keyboard(ABC):
     def __init__(self, lang_code: str = Config.DEFAULT_LANG) -> None:
         """
         Initialization
-        
+
         :param lang_code: Language of keyboard that needed
         """
 
@@ -35,7 +35,7 @@ class Keyboard(ABC):
     def markup(self) -> InlineKeyboardMarkup:
         """
         Get markup
-        
+
         :return: Markup ready-to-use
         """
 
@@ -99,7 +99,7 @@ class PaginationKeyboard(Keyboard):
                         "keyboard:list:back",
                         self.lang_code
                     ).text,
-                    f"{self.callback}{previous_page}" 
+                    f"{self.callback}{previous_page}"
                     if all_pages > 1 else "DO_NOTHING"
                 ),
                 create_button(

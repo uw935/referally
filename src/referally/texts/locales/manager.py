@@ -8,7 +8,7 @@ from ...config import Config
 from .parser import LocaleFileParser
 
 
-TEXTS: dict = LocaleFileParser.parse()
+_TEXTS: dict = LocaleFileParser.parse()
 
 
 class LocaleManager:
@@ -17,12 +17,12 @@ class LocaleManager:
     """
 
     @staticmethod
-    def get_text(lang_code: str = Config.DEFAULT_LANG) -> str:
+    def get_text(lang_code: str = Config.DEFAULT_LANG) -> dict:
         """
-        Get text by lang_code
+        Get texts by lang_code
 
         :param lang_code: Telegram language code
-        :return: Text from lang_code locale
+        :return: Texts of lang_code in dict
         """
 
-        return TEXTS.get(lang_code) or TEXTS[Config.DEFAULT_LANG]
+        return _TEXTS.get(lang_code) or _TEXTS[Config.DEFAULT_LANG]

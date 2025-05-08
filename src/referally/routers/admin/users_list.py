@@ -1,4 +1,4 @@
-from aiogram.types import CallbackQuery 
+from aiogram.types import CallbackQuery
 from aiogram import (
     F,
     Router
@@ -6,7 +6,6 @@ from aiogram import (
 
 from ...texts import TextFormatter
 from ...keyboard import (
-    create_markup,
     create_button,
     PaginationKeyboard
 )
@@ -33,9 +32,6 @@ async def users_list_callback_handler(callback: CallbackQuery) -> None:
             ),
         ),
     )
-
-    # TODO : если страница №1 - показывает кол-во юзеров в боте
-    # TODO если другая - ничего
 
     await callback.message.edit_text(
         TextFormatter(

@@ -41,7 +41,7 @@ async def shutdown_handler(bot: Bot) -> None:
     """
     Shutdown handler
 
-    :param bot: Current bot instance    
+    :param bot: Current bot instance
     """
 
     logger.info("Goodbye!")

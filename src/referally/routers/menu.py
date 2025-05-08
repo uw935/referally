@@ -8,9 +8,10 @@ from aiogram import (
     Router
 )
 
+from .admin import panel
 from ..states import AdminState
 from ..texts import TextFormatter
-from .admin import panel
+from ..verification import AdminVerification
 
 
 router = Router()
@@ -30,23 +31,27 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
     return
 
 
+# State isn't used in function and seems useless
+# however here and in "message_handler" it used only for decorator
+# no, there aren't any options to avoid this
 @router.message(default_state, CommandStart())
-async def start_handler(message: Message) -> None:
+@AdminVerification.check()
+async def start_handler(
+    message: Message,
+    state: FSMContext
+) -> None:
     """
     /start command handler
 
     :param message: Telegram Message
+    :param state: User's state. Needed for check @decorator
     """
 
-    await message.answer(
-        TextFormatter(
-            "admin:onboard:start",
-            message.from_user.language_code
-        ).text
-    )
+    await message.answer("Hello hi")
 
 
 @router.message(default_state)
+@AdminVerification.check()
 async def message_handler(
     message: Message,
     state: FSMContext
@@ -55,8 +60,7 @@ async def message_handler(
     All the messages handler
 
     :param message: Telegram message
-    :param state: User's state
+    :param state: User's state. Needed for check @decorator
     """
 
-    await state.set_state(AdminState.MENU)
-    await panel.send_menu_message(message)
+    await message.answer("Hi")

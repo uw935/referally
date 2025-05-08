@@ -3,6 +3,7 @@ Text formatter manager
 """
 
 import re
+from loguru import logger
 
 from ..config import Config
 from .locales import LocaleManager
@@ -35,10 +36,17 @@ class TextFormatter:
         :param kwargs: Arguments that required in the text
         """
 
-        self.text = LocaleManager.get_text(lang_code)
+        locale_text = LocaleManager.get_text(lang_code)
 
         for name in path.split(":"):
-            self.text = self.text[name]
+            locale_text = locale_text.get(name)
+
+            if locale_text is None:
+                locale_text = "Sorry, but this text couldn't be displayed"
+                logger.error(f"Path \"{path}\" not found")
+                break
+
+        self.text = locale_text
 
         for element in kwargs:
             if skip_md_check is not None:
