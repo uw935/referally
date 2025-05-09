@@ -14,3 +14,11 @@ class AdminState(StatesGroup):
     """
 
     MENU: State = State()
+
+
+class UserReffedState(StatesGroup):
+    """
+    State for those, who was reffed by someone
+    """
+
+    MENU: State = State()

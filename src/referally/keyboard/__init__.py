@@ -1,5 +1,6 @@
 from .base import (
     BackKeyboard,
+    AboutKeyboard,
     PaginationKeyboard
 )
 from .admin import (
@@ -18,5 +19,6 @@ __all__ = (
     "AdminMenuKeyboard",
     "AdminSettingsKeyboard",
     "BackKeyboard",
+    "AboutKeyboard",
     "PaginationKeyboard"
 )

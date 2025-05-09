@@ -13,7 +13,9 @@ class AdminVerification:
     @staticmethod
     def check() -> callable:
         """
-        Decorator for checking whether user is adamin
+        Decorator for checking whether user is admin
+
+        Changes User's state to another, if True
         """
 
         def wrapper(func) -> callable:

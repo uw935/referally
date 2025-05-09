@@ -1,3 +1,3 @@
-from .verify_admin import AdminVerification
+from .admin import AdminVerification
 
 __all__ = ("AdminVerification", )

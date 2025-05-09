@@ -1,13 +1,19 @@
-from aiogram.types import Message
-from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
-from aiogram.filters.command import CommandStart
+from aiogram.filters.command import (
+    CommandStart,
+    CommandObject
+)
+from aiogram.types import (
+    Message,
+    CallbackQuery
+)
 from aiogram import (
     F,
     Router
 )
 
+from .user import menu
 from .admin import panel
 from ..states import AdminState
 from ..texts import TextFormatter
@@ -31,23 +37,38 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
     return
 
 
-# State isn't used in function and seems useless
-# however here and in "message_handler" it used only for decorator
-# no, there aren't any options to avoid this
+# @router.message(default_state, CommandStart(deep_link=True))
 @router.message(default_state, CommandStart())
 @AdminVerification.check()
 async def start_handler(
     message: Message,
-    state: FSMContext
+    state: FSMContext,
+    command: CommandObject = None
 ) -> None:
     """
     /start command handler
 
     :param message: Telegram Message
     :param state: User's state. Needed for check @decorator
+    :param command: Telegram command
     """
 
-    await message.answer("Hello hi")
+    # TODO проверка на существование в базе, если нет - отправлять смс об этом
+    # TODO проверка подписки на канал в двух кейсах. без разницы.
+    # TODO причем это нужно сделать на уровне мидлваровб
+
+    if command.args is not None and command.args.isdigit():
+        if message.from_user.id == int(command.args):
+            await message.answer(
+                TextFormatter(
+                    "error:join_yourself",
+                    message.from_user.language_code
+                ).text
+            )
+        # TODO этот юзер - reffered
+        return
+
+    await menu.send_menu_message(message)
 
 
 @router.message(default_state)
@@ -63,4 +84,4 @@ async def message_handler(
     :param state: User's state. Needed for check @decorator
     """
 
-    await message.answer("Hi")
+    await menu.send_menu_message(message)

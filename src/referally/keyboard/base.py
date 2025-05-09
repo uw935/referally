@@ -1,11 +1,12 @@
 import math
-from aiogram.types import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton
-)
 from abc import (
     ABC,
     abstractmethod
+)
+
+from aiogram.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton
 )
 
 from ..config import Config
@@ -142,6 +143,26 @@ class BackKeyboard(Keyboard):
                         self.lang_code
                     ).text,
                     "BACK"
+                ),
+            ),
+        )
+
+
+class AboutKeyboard(Keyboard):
+    """
+    "About" keyboard
+    """
+
+    @property
+    def markup(self) -> InlineKeyboardMarkup:
+        return create_markup(
+            (
+                create_button(
+                    TextFormatter(
+                        "keyboard:copyrights",
+                        self.lang_code
+                    ).text,
+                    url="https://t.me/+FOsRd3bAe7o3YzFi"
                 ),
             ),
         )

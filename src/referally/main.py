@@ -46,10 +46,10 @@ async def shutdown_handler(bot: Bot) -> None:
 
     logger.info("Goodbye!")
 
-    await bot.send_message(
-        Config.ADMIN_ID,
-        TextFormatter("admin:shutdown").text
-    )
+    # await bot.send_message(
+    #     Config.ADMIN_ID,
+    #     TextFormatter("admin:shutdown").text
+    # )
 
 
 @dp.startup()
@@ -62,12 +62,14 @@ async def startup_handler(bot: Bot) -> None:
 
     bot_info = await bot.get_me()
 
-    logger.info(f"Bot started as @{bot_info.username}")
+    Config.bot_username = bot_info.username
 
-    await bot.send_message(
-        Config.ADMIN_ID,
-        TextFormatter("admin:startup").text
-    )
+    logger.info(f"Bot started as @{Config.bot_username}")
+
+    # await bot.send_message(
+    #     Config.ADMIN_ID,
+    #     TextFormatter("admin:startup").text
+    # )
 
 
 # Prevent from starting with another file
