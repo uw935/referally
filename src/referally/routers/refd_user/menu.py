@@ -1,6 +1,7 @@
 from aiogram import Router
 from aiogram.types import Message
 
+from ...config import Config
 from ...texts import TextFormatter
 from ...states import ReffedUserState
 from ...keyboard import SubscribeKeyboard
@@ -16,13 +17,15 @@ async def send_channel_link(message: Message) -> None:
     :param message: Telegram message
     """
 
+    channel_information = await message.bot.get_chat(Config.CHANNEL_ID)
+
     await message.answer(
         TextFormatter(
             "refd_user:channel",
             message.from_user.language_code
         ).text,
         reply_markup=SubscribeKeyboard(
-            "https://t.me/markenter",
+            channel_information.invite_link,
             message.from_user.language_code
         ).markup
     )

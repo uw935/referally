@@ -63,7 +63,6 @@ async def startup_handler(bot: Bot) -> None:
     """
 
     bot_info = await bot.get_me()
-
     Config.bot_username = bot_info.username
 
     logger.info(f"Bot started as @{Config.bot_username}")

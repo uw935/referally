@@ -13,7 +13,7 @@ from aiogram import (
     Router
 )
 
-from ..states import AdminState
+from ..config import Config
 from ..texts import TextFormatter
 from .user import menu as user_menu
 from .admin import panel as admin_panel
@@ -65,6 +65,7 @@ async def start_handler(
                 ).text
             )
             return
+
         # TODO if user already in db
         # TODO if he completelynew and have args -> show captcha
         # TODO if he have joined_by and not subscribed, then change joined_by to the new
@@ -72,7 +73,16 @@ async def start_handler(
         # TODO if he have joined_by and subscribed, then show him user_menu menu and make has_link
         # TODO if he doesn't have joined_by but subscribed, then show him user_menu
         # TODO if he doesnt't have joined_by and not subscribed, then continue here
-        await message.answer(f"Hey buddy welcome there, you btw joined by {command.args}")
+
+        channel_information = await message.bot.get_chat(Config.CHANNEL_ID)
+
+        await message.answer(
+            TextFormatter(
+                "refd_user:start",
+                message.from_user.language_code,
+                channel_name=channel_information.title
+            ).text
+        )
         await captcha.start_captcha_process(message, state)
         return
 

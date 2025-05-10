@@ -21,13 +21,16 @@ from ..keyboard import (
 )
 
 
-CAPTCHA_MAX_OBJECTS: int = 4
+CAPTCHA_MAX_OBJECTS: int = 6
 CAPTCHA_OBJECTS: dict = {
     "pig": "🐖",
     "policeman": "👮‍♀️",
     "programmer": "👨‍💻",
     "santa": "🎅",
-    "penguin": "🐧"
+    "penguin": "🐧",
+    "artist": "👨‍🎨",
+    "ninja": "🥷",
+    "cat": "🐱"
 }
 
 
