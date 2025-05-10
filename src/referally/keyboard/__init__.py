@@ -1,3 +1,4 @@
+from .channel import SubscribeKeyboard
 from .base import (
     BackKeyboard,
     AboutKeyboard,
@@ -20,5 +21,6 @@ __all__ = (
     "AdminSettingsKeyboard",
     "BackKeyboard",
     "AboutKeyboard",
-    "PaginationKeyboard"
+    "PaginationKeyboard",
+    "SubscribeKeyboard"
 )

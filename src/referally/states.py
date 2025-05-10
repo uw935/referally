@@ -16,9 +16,17 @@ class AdminState(StatesGroup):
     MENU: State = State()
 
 
-class UserReffedState(StatesGroup):
+class ReffedUserState(StatesGroup):
     """
-    State for those, who was reffed by someone
+    State for those, who was reffered by someone
     """
 
     MENU: State = State()
+
+
+class CaptchaState(StatesGroup):
+    """
+    State for Captcha
+    """
+
+    CAPTCHA: State = State()

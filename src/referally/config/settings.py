@@ -56,6 +56,8 @@ class Config:
     DEFAULT_LANG: str = os.environ["DEFAULT_LANG"].lower()
     CAROUSEL_LIMIT: int = 5
 
+    CHANNEL_ID: int = int(os.environ["CHANNEL_ID"])
+
     # This variable will be counted with start
     # and never changes
     bot_username: str = None

@@ -23,7 +23,9 @@ async def main() -> None:
     """
 
     dp.include_router(router)
+
     dp.message.filter(F.chat.type == ChatType.PRIVATE)
+    dp.message.filter(F.from_user.is_bot == False)
 
     await dp.start_polling(
         Bot(
