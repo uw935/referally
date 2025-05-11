@@ -19,6 +19,7 @@ from . import (
 router = Router()
 router.include_router(users_list.router)
 router.include_router(statistics.router)
+router.callback_query.filter(AdminState.MENU)
 
 
 async def send_menu_message(

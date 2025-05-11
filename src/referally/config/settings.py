@@ -55,3 +55,5 @@ class Config:
     ADMIN_ID: int = int(os.environ["TELEGRAM_ADMIN_ID"])
     DEFAULT_LANG: str = os.environ["DEFAULT_LANG"].lower()
     CAROUSEL_LIMIT: int = 5
+
+    CHANNEL_ID: int = int(os.environ["CHANNEL_ID"])

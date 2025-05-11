@@ -78,6 +78,8 @@ class AdminMenuKeyboard(Keyboard):
                         "keyboard:copyrights",
                         self.lang_code
                     ).text,
+                    # Anti-zpizdit' & remove copyrights
+                    # i know it's easy to find, but at least..
                     url="https://t.me/+FOsRd3bAe7o3YzFi"
                 ),
             )
