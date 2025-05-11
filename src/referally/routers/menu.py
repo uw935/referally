@@ -1,3 +1,4 @@
+from aiogram.enums import ChatMemberStatus
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.filters.command import (
@@ -124,14 +125,23 @@ async def start_handler(
         message.from_user.id
     )
 
+    is_member = not (
+        is_member.status == ChatMemberStatus.LEFT
+        or is_member.status == ChatMemberStatus.KICKED
+    )
+
     if user is None:
-        await User.add(
+        await User(message.from_user.id).add(
             has_link=True,
             subscribed=is_member,
             username=message.from_user.username
         )
-        # TODO send /start message for user who первый раз пришел
-        ...
+        await message.answer(
+            TextFormatter(
+                "user:start",
+                message.from_user.language_code
+            ).text
+        )
 
     if is_member is False:
         await user_menu.send_channel_subscribe(message)

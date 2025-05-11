@@ -14,15 +14,15 @@ class SubscribeKeyboard(Keyboard):
     Base back keyboard markup
     """
 
-    def __init__(self, lang_code: str, link: str = Cache.chat_invite_link) -> None:
+    def __init__(self, lang_code: str, link: str = None) -> None:
         """
         Initialization of subscribe keyboard
 
-        :param link: Link to subscribe
         :param lang_code: User's language code
+        :param link: Link to subscribe. Defaults to Cache.chat_invite_link
         """
 
-        self.link = link
+        self.link = link or Cache.chat_invite_link
         self.lang_code = lang_code
 
     @property

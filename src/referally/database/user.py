@@ -1,3 +1,5 @@
+import time
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
     select,
@@ -23,12 +25,12 @@ class User:
         self.user_id = user_id
 
     @connection
-    async def get(self, __db_session: AsyncSession = None) -> UserModel:
+    async def get(self, _db_session: AsyncSession) -> UserModel:
         """
         Get user's data
         """
 
-        query = await __db_session.execute(
+        query = await _db_session.execute(
             select(UserModel)
             .where(UserModel.user_id == self.user_id)
         )
@@ -41,7 +43,7 @@ class User:
         has_link: bool = False,
         username: str = None,
         joined_by_user_id: int = None,
-        __db_session: AsyncSession = None
+        _db_session: AsyncSession = None
     ) -> bool:
         """
         Add new user
@@ -58,15 +60,16 @@ class User:
         if current_user is not None:
             return False
 
-        await __db_session.execute(
+        await _db_session.execute(
             insert(UserModel)
             .values(
                 user_id=self.user_id,
                 username=username,
                 joined_by_user_id=joined_by_user_id,
                 has_link=has_link,
-                subscribed=subscribed
+                subscribed=subscribed,
+                created_at=int(time.time())
             )
         )
-        await __db_session.commit()
+        await _db_session.commit()
         return True

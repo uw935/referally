@@ -53,10 +53,10 @@ async def shutdown_handler(bot: Bot) -> None:
 
     logger.info("Goodbye!")
 
-    await bot.send_message(
-        Config.ADMIN_ID,
-        TextFormatter("admin:shutdown").text
-    )
+    # await bot.send_message(
+    #     Config.ADMIN_ID,
+    #     TextFormatter("admin:shutdown").text
+    # )
 
 
 @dp.startup()
@@ -74,15 +74,16 @@ async def startup_handler(bot: Bot) -> None:
     Cache.bot_username = bot_info.username
     Cache.chat_invite_link = chat_info.invite_link
 
-    # TODO будет ли работать?
-    assert Cache.chat_invite_link is None, "У бота нет прав администратора"
+    assert Cache.chat_invite_link is not None, (
+        "У бота нет прав на создание ссылок в канале"
+    )
 
     logger.info(f"Bot started as @{Cache.bot_username}")
 
-    await bot.send_message(
-        Config.ADMIN_ID,
-        TextFormatter("admin:startup").text
-    )
+    # await bot.send_message(
+    #     Config.ADMIN_ID,
+    #     TextFormatter("admin:startup").text
+    # )
 
 
 # Prevent from starting with another file

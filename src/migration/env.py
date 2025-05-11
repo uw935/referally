@@ -7,10 +7,10 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
-from config import Config
-from database import (
+from referally.config import Config
+from referally.database import (
     Base,
-    User
+    UserModel
 )
 
 

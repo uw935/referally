@@ -64,7 +64,7 @@ class UserModel(Base):
         Boolean,
         default=False
     )
-    timestamp: Mapped[int] = mapped_column(
+    created_at: Mapped[int] = mapped_column(
         BigInteger,
-        default=func.now()
+        nullable=False
     )

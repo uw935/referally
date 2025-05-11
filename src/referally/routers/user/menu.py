@@ -1,10 +1,7 @@
 from aiogram.types import Message
 
+from ...config import Cache
 from ...texts import TextFormatter
-from ...config import (
-    Cache,
-    Config
-)
 from ...keyboard import (
     AboutKeyboard,
     SubscribeKeyboard
@@ -25,7 +22,7 @@ async def send_menu_message(
     text = TextFormatter(
         "user:menu",
         message.from_user.language_code,
-        ref_link=f"https://t.me/{Config.bot_username}"
+        ref_link=f"https://t.me/{Cache.bot_username}"
         f"?start={message.from_user.id}",
         rating_number=1,
         users=20

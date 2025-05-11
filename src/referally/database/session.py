@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine
 )
 
-from ..config import Config
+from referally.config import Config
 
 
 engine = create_async_engine(Config.DB_URL)
@@ -28,9 +28,9 @@ def connection(function: callable) -> callable:
         :return: Given function        
         """
 
-        async with async_sessionmaker() as session:
+        async with async_session_maker() as session:
             try:
-                return await function(*args, __db_session=session, **kwargs)
+                return await function(*args, _db_session=session, **kwargs)
             except Exception as e:
                 await session.rollback()
                 raise e
