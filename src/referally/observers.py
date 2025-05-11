@@ -6,9 +6,13 @@ from aiogram.types import (
 )
 from aiogram import (
     F,
-    Router
+    Router,
+    Dispatcher
 )
 
+from .database import User
+from .texts import TextFormatter
+from .routers.user.menu import send_menu_message
 from .config import (
     Cache,
     Config
@@ -17,19 +21,6 @@ from .config import (
 
 router = Router()
 router.chat_member(F.chat.id == Config.CHANNEL_ID)
-
-
-@router.chat_member(F.new_chat_member.status == ChatMemberStatus.LEFT)
-async def channel_member_left_observer(member: ChatMemberUpdated) -> None:
-    """
-    Obsever for left / banned from channel events
-
-    :param member: Updated member data
-    """
-
-    # TODO remove from DB>.subscribed = False rn
-    # TODO Remove from local channel list. for user.
-    ...
 
 
 @router.channel_post(F.new_chat_title)
@@ -44,11 +35,47 @@ async def channel_title_observer(channel_post: Message) -> None:
     logger.info(f"New chat title: {Cache.chat_title}")
 
 
+@router.chat_member(F.new_chat_member.status == ChatMemberStatus.LEFT)
+@router.chat_member(F.new_chat_member.status == ChatMemberStatus.KICKED)
 @router.chat_member(F.new_chat_member.status == ChatMemberStatus.MEMBER)
-async def channel_member_observer(member: ChatMemberUpdated) -> None:
+async def channel_member_observer(
+    member: ChatMemberUpdated,
+    dispatcher: Dispatcher
+) -> None:
     """
+    Observer that is watching for new members
+
+    :param member: Telegram chat member
+    :param dispatcher: Current dispatcher instance
     """
 
-    # TODO обновлять - теперь он subscriberd
-    # нужен dispattcher чтобы сменить staete на default и по поводу set_data хз
-    ...
+    user = await User(member.from_user.id).get()
+
+    if user is None:
+        return
+
+    await User(member.from_user.id).update(
+        subscribed=(
+            member.new_chat_member.status == ChatMemberStatus.MEMBER
+        ),
+        has_link=(
+            None
+            if member.new_chat_member.status != ChatMemberStatus.MEMBER
+            else True
+        )
+    )
+
+    if member.new_chat_member.status == ChatMemberStatus.MEMBER:
+        await dispatcher.fsm.get_context(
+            member.bot,
+            int(member.from_user.id),
+            int(member.from_user.id)
+        ).clear()
+
+        await member.answer(
+            TextFormatter(
+                "refd_user:subscribed",
+                member.from_user.language_code
+            )
+        )
+        await send_menu_message(member)

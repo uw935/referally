@@ -58,7 +58,7 @@ async def start_handler(
 
     :param message: Telegram Message
     :param state: User's state. Needed for check @decorator
-    :param command: Telegram command
+    :param command: Telegram command. Optional
     """
 
     user = await User(message.from_user.id).get()
@@ -85,7 +85,9 @@ async def start_handler(
                                 message.from_user.language_code
                             ).text
                         )
-                        # TODO менять ему has_link
+                        await User(message.from_user.id).update(
+                            has_link=True
+                        )
                         await user_menu.send_menu_message(message)
                         return
 
@@ -106,9 +108,6 @@ async def start_handler(
                     username=message.from_user.username,
                     joined_by_user_id=int(command.args)
                 )
-                # TODO checks if he didn't created.. what's next?nadaещё тогда пробовать
-                # TODO write to admin(s)(? admins in the future)
-                # TODO write that here is new user there that was refed
 
             await message.answer(
                 TextFormatter(
