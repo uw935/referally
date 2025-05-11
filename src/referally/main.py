@@ -9,9 +9,13 @@ from aiogram import (
     Dispatcher
 )
 
-from .config import Config
-from .routers.menu import router
 from .texts import TextFormatter
+from .routers.menu import router as menu_router
+from .observers import router as observer_router
+from .config import (
+    Cache,
+    Config
+)
 
 
 dp = Dispatcher()
@@ -22,10 +26,11 @@ async def main() -> None:
     Entry point
     """
 
-    dp.include_router(router)
+    dp.include_router(menu_router)
+    dp.include_router(observer_router)
 
     dp.message.filter(F.chat.type == ChatType.PRIVATE)
-    dp.message.filter(F.from_user.is_bot == False)
+    dp.message.filter(F.from_user.is_bot == False) # noqa
 
     await dp.start_polling(
         Bot(
@@ -48,10 +53,10 @@ async def shutdown_handler(bot: Bot) -> None:
 
     logger.info("Goodbye!")
 
-    # await bot.send_message(
-    #     Config.ADMIN_ID,
-    #     TextFormatter("admin:shutdown").text
-    # )
+    await bot.send_message(
+        Config.ADMIN_ID,
+        TextFormatter("admin:shutdown").text
+    )
 
 
 @dp.startup()
@@ -63,14 +68,17 @@ async def startup_handler(bot: Bot) -> None:
     """
 
     bot_info = await bot.get_me()
-    Config.bot_username = bot_info.username
+    chat_info = await bot.get_chat(Config.CHANNEL_ID)
 
-    logger.info(f"Bot started as @{Config.bot_username}")
+    Cache.chat_title = chat_info.title
+    Cache.bot_username = bot_info.username
 
-    # await bot.send_message(
-    #     Config.ADMIN_ID,
-    #     TextFormatter("admin:startup").text
-    # )
+    logger.info(f"Bot started as @{Cache.bot_username}")
+
+    await bot.send_message(
+        Config.ADMIN_ID,
+        TextFormatter("admin:startup").text
+    )
 
 
 # Prevent from starting with another file

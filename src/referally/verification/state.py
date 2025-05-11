@@ -29,7 +29,7 @@ class ReffedUserVerification:
                     # TODO some checks, when there'll be DB
                     # TODO check whether has_link is not None
                     # TODO check if joined_by
-                    if user is user:  #lol, just for now
+                    if user is user:  # lol, just for now
                         await kwargs["state"].set_state(UserReffedState.MENU)
                         return
 

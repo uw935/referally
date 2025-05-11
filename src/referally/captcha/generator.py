@@ -46,7 +46,7 @@ class GeneratedCaptcha:
 
 class Captcha:
     """
-    Class represent Captcha generation    
+    Class represent Captcha generation
     """
 
     def __init__(self, callback: CallbackQuery) -> None:

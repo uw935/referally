@@ -13,7 +13,7 @@ from aiogram import (
     Router
 )
 
-from ..config import Config
+from ..config import Cache
 from ..texts import TextFormatter
 from .user import menu as user_menu
 from .admin import panel as admin_panel
@@ -74,13 +74,11 @@ async def start_handler(
         # TODO if he doesn't have joined_by but subscribed, then show him user_menu
         # TODO if he doesnt't have joined_by and not subscribed, then continue here
 
-        channel_information = await message.bot.get_chat(Config.CHANNEL_ID)
-
         await message.answer(
             TextFormatter(
                 "refd_user:start",
                 message.from_user.language_code,
-                channel_name=channel_information.title
+                channel_name=Cache.chat_title
             ).text
         )
         await captcha.start_captcha_process(message, state)
