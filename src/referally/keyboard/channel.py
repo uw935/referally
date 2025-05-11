@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup
 
+from ..config import Cache
 from .base import Keyboard
 from ..texts import TextFormatter
 from .methods import (
@@ -13,7 +14,7 @@ class SubscribeKeyboard(Keyboard):
     Base back keyboard markup
     """
 
-    def __init__(self, link: str, lang_code: str) -> None:
+    def __init__(self, lang_code: str, link: str = Cache.chat_invite_link) -> None:
         """
         Initialization of subscribe keyboard
 

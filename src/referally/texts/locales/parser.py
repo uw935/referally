@@ -28,7 +28,7 @@ class LocaleFileParser:
 
         result = {}
 
-        logger.info("Start language parsing", source=__name__)
+        logger.info("Start languages parsing", source=__name__)
 
         for filename in os.listdir(LOCALIZATIONS_BASE_FOLDER):
             if filename[-5:] != ".json":

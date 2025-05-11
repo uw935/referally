@@ -1,7 +1,8 @@
 from aiogram import Router
 from aiogram.types import Message
+from aiogram.fsm.context import FSMContext
 
-from ...config import Config
+from ...config import Cache
 from ...texts import TextFormatter
 from ...states import ReffedUserState
 from ...keyboard import SubscribeKeyboard
@@ -10,14 +11,18 @@ from ...keyboard import SubscribeKeyboard
 router = Router()
 
 
-async def send_channel_link(message: Message) -> None:
+async def send_channel_link(
+    message: Message,
+    state: FSMContext = None
+) -> None:
     """
-    Sends link to channel
+    Send link to channel for Refered Users
 
     :param message: Telegram message
+    :param state: User's state. Optional
     """
 
-    channel_information = await message.bot.get_chat(Config.CHANNEL_ID)
+    await state.set_state(ReffedUserState.MENU)
 
     await message.answer(
         TextFormatter(
@@ -25,7 +30,6 @@ async def send_channel_link(message: Message) -> None:
             message.from_user.language_code
         ).text,
         reply_markup=SubscribeKeyboard(
-            channel_information.invite_link,
             message.from_user.language_code
         ).markup
     )

@@ -1,7 +1,3 @@
-"""
-Text formatter manager
-"""
-
 import re
 from loguru import logger
 
@@ -27,7 +23,7 @@ class TextFormatter:
         **kwargs
     ) -> None:
         """
-        Initialization of Text
+        Initialization of TextFormatter
 
         :param path: Path of the text from JSON's
         example: ["text"]["subtext"] = "text:subtext"

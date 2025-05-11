@@ -72,6 +72,10 @@ async def startup_handler(bot: Bot) -> None:
 
     Cache.chat_title = chat_info.title
     Cache.bot_username = bot_info.username
+    Cache.chat_invite_link = chat_info.invite_link
+
+    # TODO будет ли работать?
+    assert Cache.chat_invite_link is None, "У бота нет прав администратора"
 
     logger.info(f"Bot started as @{Cache.bot_username}")
 

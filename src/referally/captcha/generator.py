@@ -90,7 +90,7 @@ class Captcha:
         for button_index in range(0, CAPTCHA_MAX_OBJECTS):
             element = result.text
 
-            # This made for replacing "verify" button in random position
+            # This made for replacing "verify" button
             # in the random position
             if button_index != random_button_index:
                 element = random.choice(captcha_objects_keys)

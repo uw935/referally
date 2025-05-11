@@ -13,13 +13,18 @@ from aiogram import (
     Router
 )
 
-from ..config import Cache
+from ..database import User
 from ..texts import TextFormatter
 from .user import menu as user_menu
 from .admin import panel as admin_panel
 from ..verification import AdminVerification
+from ..config import (
+    Cache,
+    Config
+)
 from .refd_user import (
     captcha,
+    menu as refd_user_menu,
     router as refd_user_router
 )
 
@@ -55,33 +60,81 @@ async def start_handler(
     :param command: Telegram command
     """
 
-    # TODO if this and NOT has_link
-    if command.args is not None and command.args.isdigit():
-        if message.from_user.id == int(command.args):
+    user = await User(message.from_user.id).get()
+
+    if command.args is not None and command.args.isdigit() or\
+            user and user.has_link is False:
+        if command.args and message.from_user.id == int(command.args):
+            if user and user.has_link:
+                await message.answer(
+                    TextFormatter(
+                        "error:join_yourself",
+                        message.from_user.language_code
+                    ).text
+                )
+                await user_menu.send_menu_message(message)
+                return
+        else:
+            if user is not None:
+                if user.subscribed:
+                    if user.has_link is False:
+                        await message.answer(
+                            TextFormatter(
+                                "refd_user:can_ref",
+                                message.from_user.language_code
+                            ).text
+                        )
+                        # TODO менять ему has_link
+                        await user_menu.send_menu_message(message)
+                        return
+
+                    await message.answer(
+                        TextFormatter(
+                            "user:already_signed",
+                            message.from_user.language_code
+                        ).text
+                    )
+                    await user_menu.send_menu_message(message)
+                    return
+
+                if user.captcha_passed:
+                    await refd_user_menu.send_channel_link(message, state)
+                    return
+            else:
+                await User(message.from_user.id).add(
+                    username=message.from_user.username,
+                    joined_by_user_id=int(command.args)
+                )
+                # TODO checks if he didn't created.. what's next?nadaещё тогда пробовать
+                # TODO write to admin(s)(? admins in the future)
+                # TODO write that here is new user there that was refed
+
             await message.answer(
                 TextFormatter(
-                    "error:join_yourself",
-                    message.from_user.language_code
+                    "refd_user:start",
+                    message.from_user.language_code,
+                    channel_name=Cache.chat_title
                 ).text
             )
+            await captcha.start_captcha_process(message, state)
             return
 
-        # TODO if user already in db
-        # TODO if he completelynew and have args -> show captcha
-        # TODO if he have joined_by and not subscribed, then change joined_by to the new
-            # but if joined_by = joined_by, then showlink without any captcha
-        # TODO if he have joined_by and subscribed, then show him user_menu menu and make has_link
-        # TODO if he doesn't have joined_by but subscribed, then show him user_menu
-        # TODO if he doesnt't have joined_by and not subscribed, then continue here
+    is_member = await message.bot.get_chat_member(
+        Config.CHANNEL_ID,
+        message.from_user.id
+    )
 
-        await message.answer(
-            TextFormatter(
-                "refd_user:start",
-                message.from_user.language_code,
-                channel_name=Cache.chat_title
-            ).text
+    if user is None:
+        await User.add(
+            has_link=True,
+            subscribed=is_member,
+            username=message.from_user.username
         )
-        await captcha.start_captcha_process(message, state)
+        # TODO send /start message for user who первый раз пришел
+        ...
+
+    if is_member is False:
+        await user_menu.send_channel_subscribe(message)
         return
 
     await user_menu.send_menu_message(message)

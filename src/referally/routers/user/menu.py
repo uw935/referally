@@ -1,8 +1,14 @@
 from aiogram.types import Message
 
-from ...config import Config
 from ...texts import TextFormatter
-from ...keyboard import AboutKeyboard
+from ...config import (
+    Cache,
+    Config
+)
+from ...keyboard import (
+    AboutKeyboard,
+    SubscribeKeyboard
+)
 
 
 async def send_menu_message(
@@ -34,3 +40,21 @@ async def send_menu_message(
         return
 
     await message.answer(text, reply_markup=reply_markup)
+
+
+async def send_channel_subscribe(message: Message) -> None:
+    """
+    Send message with subscription require
+
+    :param message: Telegram message
+    """
+
+    await message.answer(
+        TextFormatter(
+            "user:subscription_require",
+            message.from_user.language_code
+        ).text,
+        reply_markup=SubscribeKeyboard(
+            message.from_user.language_code
+        ).markup
+    )

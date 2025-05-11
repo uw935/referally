@@ -50,4 +50,5 @@ async def channel_member_observer(member: ChatMemberUpdated) -> None:
     """
 
     # TODO обновлять - теперь он subscriberd
+    # нужен dispattcher чтобы сменить staete на default и по поводу set_data хз
     ...
