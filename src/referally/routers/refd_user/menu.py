@@ -2,13 +2,13 @@ from aiogram import Router
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from ...config import Cache
 from ...texts import TextFormatter
 from ...states import ReffedUserState
 from ...keyboard import SubscribeKeyboard
 
 
 router = Router()
+router.message.filter(ReffedUserState.MENU)
 
 
 async def send_channel_link(
@@ -35,7 +35,7 @@ async def send_channel_link(
     )
 
 
-@router.message(ReffedUserState.MENU)
+@router.message()
 async def reffed_user_message_handler(message: Message) -> None:
     """
     All the messages handler for reffed user

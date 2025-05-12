@@ -19,6 +19,8 @@ from ...states import (
 
 
 router = Router()
+router.message.filter(CaptchaState.CAPTCHA)
+router.callback_query.filter(CaptchaState.CAPTCHA)
 
 
 async def send_captcha_message(message: Message, state: FSMContext) -> None:

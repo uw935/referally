@@ -14,16 +14,14 @@ from aiogram import (
     Router
 )
 
+from ..database import User
 from ..texts import TextFormatter
 from .user import menu as user_menu
 from .admin import panel as admin_panel
 from ..verification import (
     AdminVerification,
+    BlockedVerification,
     ReffedUserVerification
-)
-from ..database import (
-    User,
-    UserModel
 )
 from ..config import (
     Cache,
@@ -54,6 +52,7 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
 
 @router.message(default_state, CommandStart())
 @AdminVerification.check
+@BlockedVerification.check
 async def start_handler(
     message: Message,
     state: FSMContext,
@@ -165,6 +164,7 @@ async def start_handler(
 
 @router.message(default_state)
 @AdminVerification.check
+@BlockedVerification.check
 @ReffedUserVerification.check
 async def message_handler(
     message: Message,

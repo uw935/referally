@@ -1,13 +1,21 @@
+from datetime import datetime
 from aiogram.types import CallbackQuery
 from aiogram import (
     F,
     Router
 )
 
+from ...config import Config
 from ...texts import TextFormatter
+from ...database import (
+    User,
+    AllUsers,
+    UserCount
+)
 from ...keyboard import (
     create_button,
-    PaginationKeyboard
+    PaginationKeyboard,
+    AdminUserListKeyboard
 )
 
 
@@ -22,28 +30,139 @@ async def users_list_callback_handler(callback: CallbackQuery) -> None:
     :param callback: Telegram callback
     """
 
-    users_count = 1
+    users_count = await UserCount.get()
+    users = await AllUsers.get(
+        Config.CAROUSEL_LIMIT,
+        int(callback.data[11:]) * Config.CAROUSEL_LIMIT
+    )
 
-    buttons = (
+    buttons = [
         (
             create_button(
-                "user №1",
-                "USER_VIEW_1"
+                TextFormatter(
+                    "keyboard:user_button",
+                    callback.from_user.language_code,
+                    user_id=user.user_id
+                ).text,
+                f"USER_VIEW_{callback.data[11:]}_{user.user_id}"
             ),
-        ),
-    )
+        )
+        for user in users
+    ]
 
     await callback.message.edit_text(
         TextFormatter(
             "admin:users_list:text",
             callback.from_user.language_code,
-            count=users_count
+            users_count=users_count
         ).text,
         reply_markup=PaginationKeyboard(
             callback.from_user.language_code,
             buttons,
             "USERS_LIST_",
             int(callback.data[11:]),
-            1
+            users_count
+        ).markup
+    )
+
+
+@router.callback_query(F.data[:11] == "USER_UNBAN_")
+@router.callback_query(F.data[:9] == "USER_BAN_")
+async def block_callback_handler(callback: CallbackQuery) -> None:
+    """
+    Actions with user's liberty
+
+    :param callback: Telegram callback    
+    """
+
+    callback_data = callback.data.split("_")
+    user_id = int(callback_data[2])
+
+    if user_id == callback.from_user.id:
+        await callback.answer(
+            TextFormatter(
+                "error:cant_block_yourself",
+                callback.from_user.language_code
+            ).text,
+            True
+        )
+        return
+
+    user = await User(int(user_id)).get()
+
+    if user is None:
+        await callback.answer(
+            TextFormatter(
+                "error:user_not_found",
+                callback.from_user.language_code
+            ).text,
+            True
+        )
+        return
+    
+    await User(int(user_id)).update(
+        blocked="UNBAN" not in callback.data
+    )
+
+    await callback.message.edit_reply_markup(
+        reply_markup=AdminUserListKeyboard(
+            user_id,
+            "UNBAN" not in callback.data,
+            callback.from_user.id
+        ).markup
+    )
+
+    await callback.answer(
+        TextFormatter(
+            f"admin:{callback_data[1].lower()}ned",
+            callback.from_user.id
+        ).text,
+        True
+    )
+
+
+@router.callback_query(F.data[:10] == f"USER_VIEW_")
+async def user_info_callback_handler(callback: CallbackQuery) -> None:
+    """
+    User information panel callback handler
+
+    USERS_(users list back index)_(user id)
+    USERS_0_816315838
+
+    :param callback: Telegram callback
+    """
+
+    callback_data = callback.data[10:].split("_")
+
+    users_list_back_index = callback_data[0]
+    user_id = int(callback_data[1])
+
+    user = await User(user_id).get()
+
+    if user is None:
+        await callback.answer(
+            TextFormatter(
+                "error:user_not_found",
+                callback.from_user.language_code
+            ).text,
+            True
+        )
+        return
+
+    await callback.message.edit_text(
+        TextFormatter(
+            "admin:user_view:text",
+            callback.from_user.language_code,
+            user_id=user.id,
+            tgid=user.user_id,
+            username=user.username,
+            reg_timestamp=datetime.fromtimestamp(user.created_at)
+            .strftime("%d.%m.%y %H:%M:%S")
+        ).text,
+        reply_markup=AdminUserListKeyboard(
+            user_id,
+            user.blocked,
+            callback.from_user.id,
+            users_list_back_index
         ).markup
     )

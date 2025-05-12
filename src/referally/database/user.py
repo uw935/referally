@@ -87,6 +87,7 @@ class User:
         subscribed: bool | None= None,
         has_link: bool | None = None,
         username: str = "_none",
+        blocked: bool | None = None,
         _db_session: AsyncSession = None
     ) -> None:
         """
@@ -107,6 +108,9 @@ class User:
 
         if username != "_none":
             to_update["username"] = username
+
+        if blocked is not None:
+            to_update["blocked"] = blocked
 
         if len(to_update) <= 0:
             return
@@ -130,6 +134,26 @@ class User:
             .where(UserModel.user_id == self.user_id)
         )
         await _db_session.commit()
+
+
+class AllUsers:
+    @staticmethod
+    @connection
+    async def get(limit: int = 0, offset: int = 0, _db_session: AsyncSession = None) -> list[UserModel]:
+        """
+        Get all the users
+
+        :param limit: Limit
+        :param offset: Offset
+        """
+
+        users = await _db_session.execute(
+            select(UserModel)
+            .limit(limit)
+            .offset(offset)
+        )
+
+        return users.scalars().all()
 
 
 class UserCount:

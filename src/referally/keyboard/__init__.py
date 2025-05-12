@@ -6,6 +6,7 @@ from .base import (
 )
 from .admin import (
     AdminMenuKeyboard,
+    AdminUserListKeyboard,
     AdminSettingsKeyboard
 )
 from .methods import (
@@ -22,5 +23,6 @@ __all__ = (
     "BackKeyboard",
     "AboutKeyboard",
     "PaginationKeyboard",
-    "SubscribeKeyboard"
+    "SubscribeKeyboard",
+    "AdminUserListKeyboard"
 )

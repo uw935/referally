@@ -1,5 +1,6 @@
 from .user import (
     User,
+    AllUsers,
     UserCount,
     UserRating
 )

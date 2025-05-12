@@ -40,7 +40,7 @@ async def admin_statistics_handler(callback: CallbackQuery) -> None:
 
         if user.username is None:
             text = TextFormatter(
-                "admin:open_profile",
+                "keyboard:open_profile",
                 callback.from_user.id
             ).text
 

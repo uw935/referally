@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import (
 from referally.config import Config
 
 
-engine = create_async_engine(Config.DB_URL)
+engine = create_async_engine(Config.DB_URL, echo=True)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 
