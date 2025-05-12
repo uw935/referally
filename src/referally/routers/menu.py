@@ -51,8 +51,8 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
 
 
 @router.message(default_state, CommandStart())
-@AdminVerification.check
-@BlockedVerification.check
+# @AdminVerification.check
+# @BlockedVerification.check
 async def start_handler(
     message: Message,
     state: FSMContext,
@@ -96,21 +96,30 @@ async def start_handler(
                 await user_menu.send_menu_message(message)
                 return
         else:
+            # If user already exists in database
             if user is not None:
-                if user.subscribed:
+                # Checking if he is subscribed to channel ()
+                if is_member:
+                    # If user cannot invite other users
+                    # don't have he's own link
                     if user.has_link is False:
+                        # Then he can invite other users now!
+                        # because probably he already subscribed
+                        # and there was just restart of FSM or smth
+                        await User(message.from_user.id).update(
+                            has_link=True
+                        )
                         await message.answer(
                             TextFormatter(
                                 "refd_user:can_ref",
                                 message.from_user.language_code
                             ).text
                         )
-                        await User(message.from_user.id).update(
-                            has_link=True
-                        )
                         await user_menu.send_menu_message(message)
                         return
 
+                    # If user have link and already subscribed
+                    # then he can just pass to menu
                     await message.answer(
                         TextFormatter(
                             "user:already_signed",
@@ -120,18 +129,22 @@ async def start_handler(
                     await user_menu.send_menu_message(message)
                     return
 
+                # If user isn't member and he somehow appears here
+                # then probably it's just FSM got cleared
+                # so checking if he have passed the Captcha 
+                # to not show it him again
                 if user.captcha_passed:
                     await refd_user_menu.send_channel_link(message, state)
                     return
             else:
+                # Creating user, it seems he's new here
                 await User(message.from_user.id).add(
                     username=message.from_user.username,
                     joined_by_user_id=int(command.args)
                 )
-                # TODO checks if he didn't created.. what's next?nadaещё тогда пробовать
-                # TODO write to admin(s)(? admins in the future)
-                # TODO write that here is new user there that was refed
-
+            
+            # If user didn't passed the captcha
+            # or just first time here, then proceed to captcha
             await message.answer(
                 TextFormatter(
                     "refd_user:start",
