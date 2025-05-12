@@ -12,6 +12,5 @@ from .models import (
 __all__ = (
     "User",
     "UserRating",
-    "UserModel",
     "Usercount"
 )

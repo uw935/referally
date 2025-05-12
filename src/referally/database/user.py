@@ -31,15 +31,13 @@ class User:
         self.user_id = user_id
 
     @connection
-    async def get(self, to_get: Any = UserModel, _db_session: AsyncSession = None) -> UserModel:
+    async def get(self, _db_session: AsyncSession = None) -> UserModel:
         """
         Get user's data
-
-        :param to_get: Select exactly what you want
         """
 
         query = await _db_session.execute(
-            select(to_get)
+            select(UserModel)
             .where(UserModel.user_id == self.user_id)
         )
 

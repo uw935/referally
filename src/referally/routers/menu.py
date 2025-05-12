@@ -14,11 +14,17 @@ from aiogram import (
     Router
 )
 
-from ..database import User
 from ..texts import TextFormatter
 from .user import menu as user_menu
 from .admin import panel as admin_panel
-from ..verification import AdminVerification
+from ..verification import (
+    AdminVerification,
+    ReffedUserVerification
+)
+from ..database import (
+    User,
+    UserModel
+)
 from ..config import (
     Cache,
     Config
@@ -47,7 +53,7 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
 
 
 @router.message(default_state, CommandStart())
-@AdminVerification.check()
+@AdminVerification.check
 async def start_handler(
     message: Message,
     state: FSMContext,
@@ -61,9 +67,24 @@ async def start_handler(
     :param command: Telegram command. Optional
     """
 
+    is_member = await message.bot.get_chat_member(
+        Config.CHANNEL_ID,
+        message.from_user.id
+    )
+
+    is_member = not (
+        is_member.status == ChatMemberStatus.LEFT
+        or is_member.status == ChatMemberStatus.KICKED
+    )
+
+    command_args = command.args if command is not None else None
+
     user = await User(message.from_user.id).get()
 
-    if command.args is not None and command.args.isdigit() or\
+    if user is None and is_member is True:
+        command_args = None
+
+    if command_args is not None and command_args.isdigit() or\
             user and user.has_link is False:
         if command.args and message.from_user.id == int(command.args):
             if user and user.has_link:
@@ -122,16 +143,6 @@ async def start_handler(
             await captcha.start_captcha_process(message, state)
             return
 
-    is_member = await message.bot.get_chat_member(
-        Config.CHANNEL_ID,
-        message.from_user.id
-    )
-
-    is_member = not (
-        is_member.status == ChatMemberStatus.LEFT
-        or is_member.status == ChatMemberStatus.KICKED
-    )
-
     if user is None:
         await User(message.from_user.id).add(
             has_link=True,
@@ -153,7 +164,8 @@ async def start_handler(
 
 
 @router.message(default_state)
-@AdminVerification.check()
+@AdminVerification.check
+@ReffedUserVerification.check
 async def message_handler(
     message: Message,
     state: FSMContext

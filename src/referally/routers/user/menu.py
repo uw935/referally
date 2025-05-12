@@ -2,9 +2,9 @@ from aiogram.types import Message
 
 from ...config import Cache
 from ...texts import TextFormatter
+from ...verification import SubscriptionVerification
 from ...database import (
     User,
-    UserModel,
     UserRating
 )
 from ...keyboard import (
@@ -13,6 +13,7 @@ from ...keyboard import (
 )
 
 
+@SubscriptionVerification.check
 async def send_menu_message(
     message: Message,
     is_edit: bool = False
@@ -24,9 +25,7 @@ async def send_menu_message(
     :param is_edit: Whether this message should be edited
     """
 
-    user_ref_count = await User(message.from_user.id).get(
-        UserModel.referals_count
-    )
+    user_ref_count = await User(message.from_user.id).get()
     user_rating_number = await UserRating.get(message.from_user.id)
 
     text = TextFormatter(
@@ -35,7 +34,7 @@ async def send_menu_message(
         ref_link=f"https://t.me/{Cache.bot_username}"
         f"?start={message.from_user.id}",
         rating_number=user_rating_number,
-        users=user_ref_count
+        users=user_ref_count.referals_count
     ).text
 
     reply_markup = AboutKeyboard(
