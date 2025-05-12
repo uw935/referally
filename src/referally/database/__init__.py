@@ -1,8 +1,17 @@
-from .user import User
+from .user import (
+    User,
+    UserCount,
+    UserRating
+)
 from .models import (
     Base,
     UserModel
 )
 
 
-__all__ = ("User", )
+__all__ = (
+    "User",
+    "UserRating",
+    "UserModel",
+    "Usercount"
+)

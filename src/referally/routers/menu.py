@@ -108,6 +108,9 @@ async def start_handler(
                     username=message.from_user.username,
                     joined_by_user_id=int(command.args)
                 )
+                # TODO checks if he didn't created.. what's next?nadaещё тогда пробовать
+                # TODO write to admin(s)(? admins in the future)
+                # TODO write that here is new user there that was refed
 
             await message.answer(
                 TextFormatter(

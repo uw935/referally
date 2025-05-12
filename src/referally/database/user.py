@@ -1,7 +1,9 @@
 import time
+from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
+    func,
     insert,
     select,
     update,
@@ -29,15 +31,18 @@ class User:
         self.user_id = user_id
 
     @connection
-    async def get(self, _db_session: AsyncSession) -> UserModel:
+    async def get(self, to_get: Any = UserModel, _db_session: AsyncSession = None) -> UserModel:
         """
         Get user's data
+
+        :param to_get: Select exactly what you want
         """
 
         query = await _db_session.execute(
-            select(UserModel)
+            select(to_get)
             .where(UserModel.user_id == self.user_id)
         )
+
         return query.scalar_one_or_none()
 
     @connection
@@ -127,3 +132,95 @@ class User:
             .where(UserModel.user_id == self.user_id)
         )
         await _db_session.commit()
+
+
+class UserCount:
+    @staticmethod
+    @connection
+    async def get(conditions: tuple = tuple(), _db_session: AsyncSession = None) -> int:
+        """
+        Get current users count
+
+        :param conditions: Conditions for filtering. Optional
+        """
+
+        count = await _db_session.execute(
+            select(func.count())
+            .select_from(UserModel)
+            .filter(*conditions)
+        )
+
+        return count.scalar()
+
+
+class UserRatingTop:
+    """
+    Dataclass for UserRatingTop
+    """
+
+    user_id: int
+    username: str | None
+
+    def __init__(self, user_id: int, username: str) -> None:
+        """
+        Initialization
+        """
+
+        self.user_id = user_id
+        self.username = username
+
+    def __repr__(self) -> None:
+        """
+        Representation of UserRatingTop
+        """
+
+        return f"<{self.user_id}, {self.username}>"
+
+
+class UserRating:
+    """
+    Rating and all kind of that in User
+    """
+
+    @staticmethod
+    @connection
+    async def get(user_id: int, _db_session: AsyncSession) -> int:
+        """
+        Get user's rating
+
+        :param user_id: Telegram user ID
+        :return: User's rating
+        """
+
+        user = await _db_session.execute(
+            select(
+                UserModel.user_id,
+                func.rank()
+                .over(order_by=UserModel.referals_count)
+                .label("rating_number")
+            )
+            .where(UserModel.user_id == user_id)
+        )
+
+        return user.first().rating_number
+
+    @staticmethod
+    @connection
+    async def get_top(top_range: int = 3, _db_session: AsyncSession = None) -> list[UserRatingTop]:
+        """
+        Get some users from the top of the rating
+
+        :param top_range: How many users should return. 3 by default
+        :return: List of top users
+        """
+
+        users = await _db_session.execute(
+            select(
+                UserModel.user_id,
+                UserModel.username
+            )
+            .order_by(UserModel.referals_count.desc())
+            .limit(top_range)
+        )
+
+        return [UserRatingTop(*result) for result in users.all()]

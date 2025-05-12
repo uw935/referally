@@ -2,6 +2,11 @@ from aiogram.types import Message
 
 from ...config import Cache
 from ...texts import TextFormatter
+from ...database import (
+    User,
+    UserModel,
+    UserRating
+)
 from ...keyboard import (
     AboutKeyboard,
     SubscribeKeyboard
@@ -19,13 +24,18 @@ async def send_menu_message(
     :param is_edit: Whether this message should be edited
     """
 
+    user_ref_count = await User(message.from_user.id).get(
+        UserModel.referals_count
+    )
+    user_rating_number = await UserRating.get(message.from_user.id)
+
     text = TextFormatter(
         "user:menu",
         message.from_user.language_code,
         ref_link=f"https://t.me/{Cache.bot_username}"
         f"?start={message.from_user.id}",
-        rating_number=1,
-        users=20
+        rating_number=user_rating_number,
+        users=user_ref_count
     ).text
 
     reply_markup = AboutKeyboard(

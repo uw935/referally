@@ -19,7 +19,6 @@ class TextFormatter:
         path: str,
         lang_code: str = Config.DEFAULT_LANG,
         skip_md_check: bool = False,
-        /,
         **kwargs
     ) -> None:
         """
@@ -45,11 +44,13 @@ class TextFormatter:
         self.text = locale_text
 
         for element in kwargs:
-            if skip_md_check is not None:
+            kwargs[element] = str(kwargs[element])
+
+            if skip_md_check is False:
                 kwargs[element] = re.sub(
                     r"([_*\[\]()~`>#+\-=|{}.!])",
                     r"\\\1",
-                    str(kwargs[element])
+                    kwargs[element]
                 )
 
             self.text = self.text.replace(

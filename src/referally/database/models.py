@@ -32,7 +32,8 @@ class UserModel(Base):
         Integer,
         primary_key=True,
         unique=True,
-        autoincrement=True
+        autoincrement=True,
+        index=True
     )
     user_id: Mapped[int] = mapped_column(
         BigInteger,
@@ -52,13 +53,19 @@ class UserModel(Base):
         Boolean,
         default=False
     )
+    blocked: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        server_default="false"
+    )
     captcha_passed: Mapped[bool] = mapped_column(
         Boolean,
         default=False
     )
     referals_count: Mapped[int] = mapped_column(
         Integer,
-        default=0
+        default=0,
+        index=True
     )
     subscribed: Mapped[bool] = mapped_column(
         Boolean,

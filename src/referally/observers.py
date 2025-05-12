@@ -65,7 +65,8 @@ async def channel_member_observer(
         )
     )
 
-    if member.new_chat_member.status == ChatMemberStatus.MEMBER:
+    if member.new_chat_member.status == ChatMemberStatus.MEMBER and\
+            user.joined_by_user_id is not None:
         await dispatcher.fsm.get_context(
             member.bot,
             int(member.from_user.id),
@@ -78,4 +79,5 @@ async def channel_member_observer(
                 member.from_user.language_code
             )
         )
+
         await send_menu_message(member)
