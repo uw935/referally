@@ -65,19 +65,24 @@ async def channel_member_observer(
         )
     )
 
-    if member.new_chat_member.status == ChatMemberStatus.MEMBER and\
-            user.joined_by_user_id is not None:
-        await dispatcher.fsm.get_context(
-            member.bot,
-            int(member.from_user.id),
-            int(member.from_user.id)
-        ).clear()
+    if user.joined_by_user_id is not None:
+        if member.new_chat_member.status == ChatMemberStatus.MEMBER:
+            await User(user.joined_by_user_id).update(plus_referal_count=1)
 
-        await member.answer(
-            TextFormatter(
-                "refd_user:subscribed",
-                member.from_user.language_code
+            await dispatcher.fsm.get_context(
+                member.bot,
+                int(member.from_user.id),
+                int(member.from_user.id)
+            ).clear()
+
+            await member.answer(
+                TextFormatter(
+                    "refd_user:subscribed",
+                    member.from_user.language_code
+                )
             )
-        )
 
-        await send_menu_message(member)
+            await send_menu_message(member)
+            return
+
+        await User(user.joined_by_user_id).update(plus_referal_count=-1)

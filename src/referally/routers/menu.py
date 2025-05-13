@@ -51,8 +51,8 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
 
 
 @router.message(default_state, CommandStart())
-# @AdminVerification.check
-# @BlockedVerification.check
+@AdminVerification.check
+@BlockedVerification.check
 async def start_handler(
     message: Message,
     state: FSMContext,
@@ -85,7 +85,12 @@ async def start_handler(
 
     if command_args is not None and command_args.isdigit() or\
             user and user.has_link is False:
-        if command.args and message.from_user.id == int(command.args):
+        command_args = int(command_args)
+
+        if message.from_user.id == command_args:
+            # If user exists and has_link and doin'
+            # this stuff like placing his ID in link. then show him an error
+            # otherwise he is smart asf, register him!
             if user and user.has_link:
                 await message.answer(
                     TextFormatter(
@@ -96,6 +101,13 @@ async def start_handler(
                 await user_menu.send_menu_message(message)
                 return
         else:
+            refed_user = await User(command_args).get()
+
+            if refed_user is None or refed_user.blocked:
+                # Basically if refer_user blocked or doesn't exist
+                # it just won't count as his refer
+                command_args = None
+
             # If user already exists in database
             if user is not None:
                 # Checking if he is subscribed to channel ()
@@ -140,9 +152,9 @@ async def start_handler(
                 # Creating user, it seems he's new here
                 await User(message.from_user.id).add(
                     username=message.from_user.username,
-                    joined_by_user_id=int(command.args)
+                    joined_by_user_id=command_args
                 )
-            
+
             # If user didn't passed the captcha
             # or just first time here, then proceed to captcha
             await message.answer(

@@ -8,8 +8,10 @@
         },
         "statistics": "*Статистика*\n\nПользователей с ссылкой: {users_count}\nВсего привлечено: {new_subscribers} подписчиков\n\nРейтинг\n{users_rating}",
         "user_view": {
-            "text": "*Пользователь №{user_id}*\n\nTelegram ID: {tgid}\nЮзернейм: {username}\nЗарегистрирован: {reg_timestamp}"
+            "text": "*Пользователь №{user_id}*\n\nTelegram ID: {tgid}\nЮзернейм: {username}\nЗарегистрирован: {reg_timestamp}\nБыл приглашен: {was_refered}\nЕсть своя ссылка: {has_link}\nПригласил пользователей: {referals_count}\nПодписан на канал: {is_subscribed}"
         },
+        "yes": "Да",
+        "no": "Нет",
         "unbanned": "Пользователь был успешно разблокирован",
         "banned": "Пользователь был успешно заблокирован",
         "menu": "*Главное меню*\n\n_Рефералли\\. Спасибо за установку_"

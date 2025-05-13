@@ -3,6 +3,7 @@ from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
+    and_,
     func,
     insert,
     select,
@@ -88,14 +89,17 @@ class User:
         has_link: bool | None = None,
         username: str = "_none",
         blocked: bool | None = None,
+        plus_referal_count: int | None = None,
         _db_session: AsyncSession = None
     ) -> None:
         """
         Update user in DB
-        
+
         :param subscribed: True if user subscribed to the channel
         :param has_link: True if user have his referal link
         :param username: Telegram username
+        :param plus_referal_count: Plus referal count of this user
+        E.g. -5 will remove 5 referals from this user and add without sign
         """
 
         to_update = {}
@@ -111,6 +115,12 @@ class User:
 
         if blocked is not None:
             to_update["blocked"] = blocked
+        
+        if plus_referal_count is not None:
+            to_update["referals_count"] = (
+                UserModel.referals_count
+                + plus_referal_count
+            )
 
         if len(to_update) <= 0:
             return
@@ -149,6 +159,7 @@ class AllUsers:
 
         users = await _db_session.execute(
             select(UserModel)
+            .order_by(UserModel.id.asc())
             .limit(limit)
             .offset(offset)
         )
@@ -182,14 +193,20 @@ class UserRatingTop:
 
     user_id: int
     username: str | None
+    referals_count: int
 
-    def __init__(self, user_id: int, username: str) -> None:
+    def __init__(self, user_id: int, username: str, referals_count: int) -> None:
         """
-        Initialization
+        Initialization of top rating
+
+        :param user_id: Telegram user ID
+        :param username: Telegram username
+        :param referals_count: User's referals count
         """
 
         self.user_id = user_id
         self.username = username
+        self.referals_count = referals_count
 
     def __repr__(self) -> None:
         """
@@ -221,7 +238,13 @@ class UserRating:
                 .over(order_by=UserModel.referals_count)
                 .label("rating_number")
             )
-            .where(UserModel.user_id == user_id)
+            .where(
+                and_(
+                    UserModel.user_id == user_id
+                    and
+                    UserModel.blocked is not True
+                )
+            )
         )
 
         return user.first().rating_number
@@ -239,8 +262,10 @@ class UserRating:
         users = await _db_session.execute(
             select(
                 UserModel.user_id,
-                UserModel.username
+                UserModel.username,
+                UserModel.referals_count
             )
+            .filter(UserModel.blocked.isnot(True))
             .order_by(UserModel.referals_count.desc())
             .limit(top_range)
         )

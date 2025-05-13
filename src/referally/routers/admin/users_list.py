@@ -148,6 +148,15 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
             True
         )
         return
+    
+    yes = TextFormatter(
+        "admin:yes",
+        callback.from_user.language_code
+    ).text
+    no = TextFormatter(
+        "admin:no",
+        callback.from_user.language_code
+    ).text
 
     await callback.message.edit_text(
         TextFormatter(
@@ -157,7 +166,11 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
             tgid=user.user_id,
             username=user.username,
             reg_timestamp=datetime.fromtimestamp(user.created_at)
-            .strftime("%d.%m.%y %H:%M:%S")
+            .strftime("%d.%m.%y %H:%M"),
+            was_refered=yes if user.joined_by_user_id is not None else no,
+            has_link=yes if user.has_link else no,
+            referals_count=user.referals_count,
+            is_subscribed=yes if user.subscribed else no
         ).text,
         reply_markup=AdminUserListKeyboard(
             user_id,

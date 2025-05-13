@@ -46,7 +46,8 @@ async def admin_statistics_handler(callback: CallbackQuery) -> None:
 
             mention = f"[{text}](tg://user?id={user.user_id})"
 
-        users_rating += f"{top_users.index(user) + 1} {mention}\n"
+        users_rating += f"{top_users.index(user) + 1}\\. {mention} "
+        users_rating += f"\\(\\+{user.referals_count}\\)\n"
 
     await callback.message.edit_text(
         TextFormatter(
