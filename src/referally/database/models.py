@@ -1,6 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncAttrs
 from sqlalchemy import (
-    func,
     String,
     Integer,
     Boolean,

@@ -26,7 +26,7 @@ class ReffedUserVerification:
             Wrapper for decorated function
 
             :param args: Function's arguments
-            :param kwargs: Key-worded arguments            
+            :param kwargs: Key-worded arguments
             """
 
             if args[0] is not None:

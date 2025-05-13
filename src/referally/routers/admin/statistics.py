@@ -27,7 +27,7 @@ async def admin_statistics_handler(callback: CallbackQuery) -> None:
     users_count = await UserCount.get()
     new_subscribers = await UserCount.get(
         (
-            UserModel.subscribed == True,
+            UserModel.subscribed.is_(True),
             UserModel.joined_by_user_id.is_not(None)
         )
     )

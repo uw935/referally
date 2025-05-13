@@ -1,5 +1,5 @@
 import time
-from typing import Any
+from dataclasses import dataclass
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
@@ -34,7 +34,9 @@ class User:
     @connection
     async def get(self, _db_session: AsyncSession = None) -> UserModel:
         """
-        Get user's data
+        Get all the User's data
+
+        :return: UserModel with all the data
         """
 
         query = await _db_session.execute(
@@ -57,10 +59,10 @@ class User:
         Add new user
 
         :param subscribed: True if user subscribed to the channel. Optional
-        :param has_link: True if user have ref link. Optional
-        :param username: Telegram username. Optional
-        :param joined_by_user_id: User ID of reffered. Optional
-        :return: False if user already created, True otherwise
+        :param has_link: True if user have referal link. Optional
+        :param username: Telegram Username. Optional
+        :param joined_by_user_id: User ID of whom him was referred. Optional
+        :return: True if all successful, False if user was already exist
         """
 
         current_user = await self.get()
@@ -79,13 +81,14 @@ class User:
                 created_at=int(time.time())
             )
         )
+
         await _db_session.commit()
         return True
 
     @connection
     async def update(
         self,
-        subscribed: bool | None= None,
+        subscribed: bool | None = None,
         has_link: bool | None = None,
         username: str = "_none",
         blocked: bool | None = None,
@@ -93,20 +96,26 @@ class User:
         _db_session: AsyncSession = None
     ) -> None:
         """
-        Update user in DB
+        Update User's data
 
         :param subscribed: True if user subscribed to the channel
         :param has_link: True if user have his referal link
-        :param username: Telegram username
+        :param username: Telegram Username
         :param plus_referal_count: Plus referal count of this user
-        E.g. -5 will remove 5 referals from this user and add without sign
+
+        ## More about `plus_referal_count`
+        This number will be added to the current user's referals_count.
+
+        Examples
+            1. -5 will remove 5 referals from this user (because (+) + (-) = -)
+            2. 5 (without sign) adds 5 referalls to this user
         """
 
         to_update = {}
 
         if subscribed is not None:
             to_update["subscribed"] = subscribed
-        
+
         if has_link is not None:
             to_update["has_link"] = has_link
 
@@ -115,7 +124,7 @@ class User:
 
         if blocked is not None:
             to_update["blocked"] = blocked
-        
+
         if plus_referal_count is not None:
             to_update["referals_count"] = (
                 UserModel.referals_count
@@ -136,25 +145,35 @@ class User:
     @connection
     async def delete(self, _db_session: AsyncSession) -> None:
         """
-        Delete user from DB
+        Delete User from database
         """
 
         await _db_session(
             delete(UserModel)
             .where(UserModel.user_id == self.user_id)
         )
+
         await _db_session.commit()
 
 
 class AllUsers:
+    """
+    Methods for working with all the Users
+    """
+
     @staticmethod
     @connection
-    async def get(limit: int = 0, offset: int = 0, _db_session: AsyncSession = None) -> list[UserModel]:
+    async def get(
+        limit: int = 0,
+        offset: int = 0,
+        _db_session: AsyncSession = None
+    ) -> list[UserModel]:
         """
         Get all the users
 
-        :param limit: Limit
-        :param offset: Offset
+        :param limit: Maximum users to get. Optional
+        :param offset: Offset of fetching. Optional
+        :return: List of UserModels
         """
 
         users = await _db_session.execute(
@@ -168,13 +187,29 @@ class AllUsers:
 
 
 class UserCount:
+    """
+    Methods for working with all the Users count
+    """
+
     @staticmethod
     @connection
-    async def get(conditions: tuple = tuple(), _db_session: AsyncSession = None) -> int:
+    async def get(
+        conditions: tuple = tuple(),
+        _db_session: AsyncSession = None
+    ) -> int:
         """
         Get current users count
 
         :param conditions: Conditions for filtering. Optional
+        :return: Current users count
+
+        ## More about `conditions`
+        You can provide any necessary filters for fetching data
+        in this argument
+
+        Examples
+            1. (UserModel.referals_count >= 200, ) will return count of users
+            with ID more than 200
         """
 
         count = await _db_session.execute(
@@ -186,39 +221,27 @@ class UserCount:
         return count.scalar()
 
 
+@dataclass(repr=True, init=True, frozen=True)
 class UserRatingTop:
     """
     Dataclass for UserRatingTop
+
+    :param user_id: Telegram user ID
+    :param username: Telegram username
+    :param referals_count: User's referals count
     """
 
     user_id: int
     username: str | None
     referals_count: int
 
-    def __init__(self, user_id: int, username: str, referals_count: int) -> None:
-        """
-        Initialization of top rating
-
-        :param user_id: Telegram user ID
-        :param username: Telegram username
-        :param referals_count: User's referals count
-        """
-
-        self.user_id = user_id
-        self.username = username
-        self.referals_count = referals_count
-
-    def __repr__(self) -> None:
-        """
-        Representation of UserRatingTop
-        """
-
-        return f"<{self.user_id}, {self.username}>"
-
 
 class UserRating:
     """
     Rating and all kind of that in User
+
+    All the users rated here by `referals_count`
+    the more user have it, the higher his rating
     """
 
     @staticmethod
@@ -234,6 +257,9 @@ class UserRating:
         user = await _db_session.execute(
             select(
                 UserModel.user_id,
+                # Ranking users by UserModel.referals_count
+                # and calling their position "rating_number"
+                # so we can access it below in return
                 func.rank()
                 .over(order_by=UserModel.referals_count)
                 .label("rating_number")
@@ -251,12 +277,15 @@ class UserRating:
 
     @staticmethod
     @connection
-    async def get_top(top_range: int = 3, _db_session: AsyncSession = None) -> list[UserRatingTop]:
+    async def get_top(
+        top_range: int = 3,
+        _db_session: AsyncSession = None
+    ) -> list[UserRatingTop]:
         """
-        Get some users from the top of the rating
+        Get top users
 
-        :param top_range: How many users should return. 3 by default
-        :return: List of top users
+        :param top_range: How many top users should be returned. Optional
+        :return: List of top users with UserRatingTop dataclass
         """
 
         users = await _db_session.execute(

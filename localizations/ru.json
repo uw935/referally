@@ -72,6 +72,6 @@
         "captcha_settings": "Настройки Captcha",
         "text_settings": "Настройки текста",
         "reset_data": "Сбросить данные",
-        "copyrights": "О проекте"
+        "about": "О проекте"
     }
 }

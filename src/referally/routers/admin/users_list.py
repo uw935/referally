@@ -72,7 +72,7 @@ async def block_callback_handler(callback: CallbackQuery) -> None:
     """
     Actions with user's liberty
 
-    :param callback: Telegram callback    
+    :param callback: Telegram callback
     """
 
     callback_data = callback.data.split("_")
@@ -99,7 +99,7 @@ async def block_callback_handler(callback: CallbackQuery) -> None:
             True
         )
         return
-    
+
     await User(int(user_id)).update(
         blocked="UNBAN" not in callback.data
     )
@@ -121,7 +121,7 @@ async def block_callback_handler(callback: CallbackQuery) -> None:
     )
 
 
-@router.callback_query(F.data[:10] == f"USER_VIEW_")
+@router.callback_query(F.data[:10] == "USER_VIEW_")
 async def user_info_callback_handler(callback: CallbackQuery) -> None:
     """
     User information panel callback handler
@@ -148,7 +148,7 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
             True
         )
         return
-    
+
     yes = TextFormatter(
         "admin:yes",
         callback.from_user.language_code

@@ -26,7 +26,7 @@ class AdminVerification:
             Wrapper for decorated function
 
             :param args: Function's positional arguments
-            :param kwargs: Function's key-word positional arguments            
+            :param kwargs: Function's key-word positional arguments
             """
 
             if args[0] is not None:

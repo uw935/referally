@@ -79,6 +79,7 @@ class Captcha:
 
         result = GeneratedCaptcha
         result.id = int(time.time())
+
         captcha_objects_keys = list(CAPTCHA_OBJECTS.keys())
 
         result.text = random.choice(captcha_objects_keys)

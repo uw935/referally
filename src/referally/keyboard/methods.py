@@ -18,6 +18,12 @@ def create_button(
     :return: Inline keyboard button
     """
 
+    if callback is None and url is None:
+        raise ValueError(
+            "Callback and URL can't both be None. "
+            "At least one of them should have some value"
+        )
+
     return InlineKeyboardButton(
         text=text,
         callback_data=callback,

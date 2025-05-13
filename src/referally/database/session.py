@@ -1,13 +1,14 @@
 import functools
+
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine
 )
 
-from referally.config import Config
+from ..config import Config
 
 
-engine = create_async_engine(Config.DB_URL, echo=True)
+engine = create_async_engine(Config.DB_URL)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 
@@ -25,7 +26,7 @@ def connection(function: callable) -> callable:
 
         :param args: Function's arguments
         :param kwargs: Function's key-worded arguments
-        :return: Given function        
+        :return: Given function
         """
 
         async with async_session_maker() as session:

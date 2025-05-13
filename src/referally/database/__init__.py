@@ -1,17 +1,21 @@
+from .models import (
+    Base,
+    UserModel
+)
 from .user import (
     User,
     AllUsers,
     UserCount,
     UserRating
 )
-from .models import (
-    Base,
-    UserModel
-)
 
 
 __all__ = (
+    "Base",
     "User",
-    "UserRating",
-    "Usercount"
+    "AllUsers",
+    "Usercount",
+    "UserModel",
+    "UserCount",
+    "UserRating"
 )

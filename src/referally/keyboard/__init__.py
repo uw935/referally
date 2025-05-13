@@ -16,13 +16,13 @@ from .methods import (
 
 
 __all__ = (
-    "create_button",
-    "create_markup",
-    "AdminMenuKeyboard",
-    "AdminSettingsKeyboard",
     "BackKeyboard",
     "AboutKeyboard",
-    "PaginationKeyboard",
+    "create_button",
+    "create_markup",
     "SubscribeKeyboard",
-    "AdminUserListKeyboard"
+    "AdminMenuKeyboard",
+    "PaginationKeyboard",
+    "AdminUserListKeyboard",
+    "AdminSettingsKeyboard"
 )

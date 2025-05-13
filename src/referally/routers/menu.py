@@ -143,7 +143,7 @@ async def start_handler(
 
                 # If user isn't member and he somehow appears here
                 # then probably it's just FSM got cleared
-                # so checking if he have passed the Captcha 
+                # so checking if he have passed the Captcha
                 # to not show it him again
                 if user.captcha_passed:
                     await refd_user_menu.send_channel_link(message, state)
