@@ -117,7 +117,7 @@ async def captcha_proceed_handler(
         return
 
     # There are 2 attempts
-    # but "captcha_attempt" is starting from 0, so we have 1 here.
+    # but "captcha_attempt" is starting from 0, so we have 1 here
     if state_data["captcha_attempt"] >= 1:
         await state.clear()
 

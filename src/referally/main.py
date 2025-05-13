@@ -1,4 +1,5 @@
 import asyncio
+
 from loguru import logger
 from aiogram.enums.chat_type import ChatType
 from aiogram.enums.parse_mode import ParseMode
@@ -30,7 +31,7 @@ async def main() -> None:
     dp.include_router(observer_router)
 
     dp.message.filter(F.chat.type == ChatType.PRIVATE)
-    dp.message.filter(F.from_user.is_bot == False) # noqa
+    dp.message.filter(F.from_user.is_bot == False)  # noqa: E712
 
     await dp.start_polling(
         Bot(

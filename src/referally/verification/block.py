@@ -6,18 +6,15 @@ from ..texts import TextFormatter
 
 class BlockedVerification:
     """
-    Checking whether user is reffed by someone
+    Checking whether user is blocked by administrator
 
-    Then he got another kind of menu. Check out documentation for more.
+    Blocking function's working if so
     """
 
     @staticmethod
     def check(function) -> callable:
         """
-        Decorator for checking whether user is reffed by someone
-        and don't has_link
-
-        Changes User's state to another, if True
+        Decorator for checking whether user is blocked
         """
 
         @functools.wraps(function)

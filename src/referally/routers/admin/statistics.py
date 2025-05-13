@@ -19,7 +19,7 @@ router = Router()
 @router.callback_query(F.data == "ADMIN_STATISTICS")
 async def admin_statistics_handler(callback: CallbackQuery) -> None:
     """
-    Handler of admin statistics query
+    Handler of admin statistics button
 
     :param callback: Telegram Callback
     """

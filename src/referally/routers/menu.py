@@ -42,9 +42,11 @@ router.include_router(refd_user_router)
 @router.callback_query(F.data == "DO_NOTHING")
 async def do_nothing_callback_handler(_: CallbackQuery) -> None:
     """
-    Callback for buttons, just do nothing
+    Callback for buttons that are just do nothing
 
-    For example, pagination
+    They are chill guys. Just nothing to do
+
+    For example, for some pagination keyboard buttons
     """
 
     return
@@ -62,7 +64,7 @@ async def start_handler(
     /start command handler
 
     :param message: Telegram Message
-    :param state: User's state. Needed for check @decorator
+    :param state: User's state
     :param command: Telegram command. Optional
     """
 
@@ -80,6 +82,8 @@ async def start_handler(
 
     user = await User(message.from_user.id).get()
 
+    # Saving already subscribed, old subscribers, love
+    # from being refered by someone
     if user is None and is_member is True:
         command_args = None
 
@@ -89,8 +93,9 @@ async def start_handler(
 
         if message.from_user.id == command_args:
             # If user exists and has_link and doin'
-            # this stuff like placing his ID in link. then show him an error
-            # otherwise he is smart asf, register him!
+            # this kinda stuff like placing his ID in link
+            # then show him an error
+            # otherwise he is smart asf, we need him for promotion
             if user and user.has_link:
                 await message.answer(
                     TextFormatter(
@@ -108,9 +113,7 @@ async def start_handler(
                 # it just won't count as his refer
                 command_args = None
 
-            # If user already exists in database
             if user is not None:
-                # Checking if he is subscribed to channel ()
                 if is_member:
                     # If user cannot invite other users
                     # don't have he's own link
@@ -131,7 +134,7 @@ async def start_handler(
                         return
 
                     # If user have link and already subscribed
-                    # then he can just pass to menu
+                    # then he can just pass to user's menu
                     await message.answer(
                         TextFormatter(
                             "user:already_signed",

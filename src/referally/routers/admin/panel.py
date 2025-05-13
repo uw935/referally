@@ -20,8 +20,8 @@ router = Router()
 router.include_router(users_list.router)
 router.include_router(statistics.router)
 
-router.callback_query.filter(AdminState.MENU)
 router.message.filter(AdminState.MENU)
+router.callback_query.filter(AdminState.MENU)
 
 
 async def send_menu_message(
@@ -55,7 +55,7 @@ async def send_menu_message(
 @router.callback_query(F.data == "BACK")
 async def back_button_handler(callback: CallbackQuery) -> None:
     """
-    Back button handler
+    Back button callback handler
 
     :param message: Telegram message
     """
@@ -66,7 +66,7 @@ async def back_button_handler(callback: CallbackQuery) -> None:
 @router.message()
 async def admin_message_handler(message: Message) -> None:
     """
-    All the messages from admin
+    All the messages from admin handler
 
     :param message: Telegram message
     """

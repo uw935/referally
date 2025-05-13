@@ -8,7 +8,7 @@ class ReffedUserVerification:
     """
     Checking whether user is reffed by someone
 
-    Then he got another kind of menu. Check out documentation for more.
+    Then he got another kind of menu. Only if he don't have has_link
     """
 
     @staticmethod
@@ -17,7 +17,7 @@ class ReffedUserVerification:
         Decorator for checking whether user is reffed by someone
         and don't has_link
 
-        Changes User's state to another, if True
+        Changes User's state to ReffedUserState, if True
         """
 
         @functools.wraps(function)

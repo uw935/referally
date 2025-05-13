@@ -24,11 +24,18 @@ class TextFormatter:
         """
         Initialization of TextFormatter
 
-        :param path: Path of the text from JSON's
-        example: ["text"]["subtext"] = "text:subtext"
-        :param skip_md_check: True if it should skip the Markdown
-        check for args in kwargs
+        :param path: Path of the text from JSON's. See `more about` it below
+        :param lang_code: Text's langauge code that is needed
+        :param skip_md_check: True if skip the Markdown check
+        for args in kwargs
         :param kwargs: Arguments that required in the text
+
+        ## More about `path`
+        It's the path to the text from .JSON, all names separated by ":"
+
+        Example
+            1. **keyboard:list:back** — references to back button text
+            in list in keyboard
         """
 
         locale_text = LocaleManager.get_text(lang_code)

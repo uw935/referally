@@ -36,6 +36,7 @@ class SubscriptionVerification:
                     Config.CHANNEL_ID,
                     args[0].from_user.id
                 )
+
                 user_subscribed = not (
                     user_subscribed.status == ChatMemberStatus.LEFT
                     or user_subscribed.status == ChatMemberStatus.KICKED

@@ -9,7 +9,9 @@ from ..database import User as UserDb
 
 class AdminVerification:
     """
-    Admin verification
+    Checking whether user is admin
+
+    If so, change state
     """
 
     @staticmethod
@@ -17,7 +19,7 @@ class AdminVerification:
         """
         Decorator for checking whether user is admin
 
-        Changes User's state to another, if True
+        Changes User's state to AdminState, if True
         """
 
         @functools.wraps(func)
@@ -33,8 +35,6 @@ class AdminVerification:
                 user: User = args[0].from_user
 
                 if user.id == Config.ADMIN_ID:
-                    # This will executed only a few times by admins
-                    # we can use it without any performance issues
                     user_not_in_db = await UserDb(user.id).add()
 
                     if user_not_in_db is True:

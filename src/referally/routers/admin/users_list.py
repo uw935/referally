@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from aiogram.types import CallbackQuery
 from aiogram import (
     F,
@@ -33,6 +34,7 @@ async def users_list_callback_handler(callback: CallbackQuery) -> None:
     users_count = await UserCount.get()
     users = await AllUsers.get(
         Config.CAROUSEL_LIMIT,
+        # Offset moving with every page by carousel limit
         int(callback.data[11:]) * Config.CAROUSEL_LIMIT
     )
 
@@ -88,7 +90,7 @@ async def block_callback_handler(callback: CallbackQuery) -> None:
         )
         return
 
-    user = await User(int(user_id)).get()
+    user = await User(user_id).get()
 
     if user is None:
         await callback.answer(
@@ -100,7 +102,7 @@ async def block_callback_handler(callback: CallbackQuery) -> None:
         )
         return
 
-    await User(int(user_id)).update(
+    await User(user_id).update(
         blocked="UNBAN" not in callback.data
     )
 
@@ -126,9 +128,6 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
     """
     User information panel callback handler
 
-    USERS_(users list back index)_(user id)
-    USERS_0_816315838
-
     :param callback: Telegram callback
     """
 
@@ -149,11 +148,11 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
         )
         return
 
-    yes = TextFormatter(
+    yes_text = TextFormatter(
         "admin:yes",
         callback.from_user.language_code
     ).text
-    no = TextFormatter(
+    no_text = TextFormatter(
         "admin:no",
         callback.from_user.language_code
     ).text
@@ -167,10 +166,11 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
             username=user.username,
             reg_timestamp=datetime.fromtimestamp(user.created_at)
             .strftime("%d.%m.%y %H:%M"),
-            was_refered=yes if user.joined_by_user_id is not None else no,
-            has_link=yes if user.has_link else no,
+            was_refered=yes_text if user.joined_by_user_id is not None
+            else no_text,
+            has_link=yes_text if user.has_link else no_text,
             referals_count=user.referals_count,
-            is_subscribed=yes if user.subscribed else no
+            is_subscribed=yes_text if user.subscribed else no_text
         ).text,
         reply_markup=AdminUserListKeyboard(
             user_id,

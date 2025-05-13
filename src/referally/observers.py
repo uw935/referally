@@ -43,7 +43,9 @@ async def channel_member_observer(
     dispatcher: Dispatcher
 ) -> None:
     """
-    Observer that is watching for new members
+    Observer that is watching for channel' events with members
+
+    Remove / Kicked / Added
 
     :param member: Telegram chat member
     :param dispatcher: Current dispatcher instance
