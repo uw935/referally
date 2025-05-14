@@ -5,6 +5,7 @@ from abc import (
 )
 
 from aiogram.types import (
+    CallbackQuery,
     InlineKeyboardMarkup,
     InlineKeyboardButton
 )
@@ -26,7 +27,7 @@ class Keyboard(ABC):
         """
         Initialization
 
-        :param lang_code: Language of keyboard that needed
+        :param lang_code: Language code of keyboard's text that is needed
         """
 
         self.lang_code = lang_code
@@ -35,7 +36,7 @@ class Keyboard(ABC):
     @abstractmethod
     def markup(self) -> InlineKeyboardMarkup:
         """
-        Get markup
+        Property for getting markup
 
         :return: Markup ready-to-use
         """
@@ -45,51 +46,60 @@ class Keyboard(ABC):
 
 class PaginationKeyboard(Keyboard):
     """
-    Base pagination keyboard
+    Pagination keyboard
+
+    There are provided `buttons (in initialization)`
+    with `sliders` and `Back` button
     """
 
     def __init__(
         self,
         lang_code: str,
         buttons: tuple[InlineKeyboardButton] | list[InlineKeyboardButton],
-        callback: str,
+        callback: CallbackQuery,
         current_page: int,
         objects_count: int,
-        page_limit: int = Config.CAROUSEL_LIMIT
+        buttons_limit: int = Config.CAROUSEL_LIMIT
     ) -> None:
         """
-        Initialization of Pagination keyboard
+        Creating Pagination Keyboard with sliders and back button
 
-        :param lang_code: Language code
+        :param lang_code: Language code of keyboard' text needed
         :param buttons: Tuple or list of buttons to display on this page
-        :param callback: Next page callback
-        :param current_page: Current page count
-        :param objects_count: All the objects count
-        :param page_limit: Pages limit (how much objects on one page)
+        :param callback: Page display callback. See `more about` it below
+        :param current_page: Current page index (will be display in buttons)
+        :param objects_count: All the objects to paginate count
+        (will be display in buttons)
+        :param buttons_limit: Maximum count of objects on one page. Optional
         :return: Pagination keyboard
+
+        ## More about `callback`
+        Callback will receive index of page that is needed to display
+        after "_"
+
+        Example
+            1. **CALLBACK_HANDLER_1** — have "_1" at the end
+            which references to current page to display
         """
 
         self.lang_code = lang_code
         self.buttons = buttons
         self.callback = callback
         self.current_page = current_page
-        self.objects_count = objects_count
-        self.page_limit = page_limit
+        self.all_pages = math.ceil(objects_count / buttons_limit)
 
     @property
     def markup(self) -> InlineKeyboardMarkup:
-        all_pages = math.ceil(self.objects_count / self.page_limit)
-
         previous_page = self.current_page - 1
         next_page = self.current_page + 1
 
-        if all_pages <= 0:
-            all_pages = 1
+        if self.all_pages <= 0:
+            self.all_pages = 1
 
         if previous_page < 0:
-            previous_page = all_pages - 1
+            previous_page = self.all_pages - 1
 
-        if next_page >= all_pages:
+        if next_page >= self.all_pages:
             next_page = 0
 
         return create_markup(
@@ -101,10 +111,10 @@ class PaginationKeyboard(Keyboard):
                         self.lang_code
                     ).text,
                     f"{self.callback}{previous_page}"
-                    if all_pages > 1 else "DO_NOTHING"
+                    if self.all_pages > 1 else "DO_NOTHING"
                 ),
                 create_button(
-                    f"{self.current_page + 1} / {all_pages}",
+                    f"{self.current_page + 1} / {self.all_pages}",
                     "DO_NOTHING"
                 ),
                 create_button(
@@ -113,7 +123,7 @@ class PaginationKeyboard(Keyboard):
                         self.lang_code
                     ).text,
                     f"{self.callback}{next_page}"
-                    if all_pages > 1 else "DO_NOTHING"
+                    if self.all_pages > 1 else "DO_NOTHING"
                 )
             ),
             (
@@ -131,6 +141,8 @@ class PaginationKeyboard(Keyboard):
 class BackKeyboard(Keyboard):
     """
     Base back keyboard markup
+
+    There is only one `Back` button
     """
 
     @property
@@ -150,7 +162,9 @@ class BackKeyboard(Keyboard):
 
 class AboutKeyboard(Keyboard):
     """
-    "About" keyboard
+    About keyboard
+
+    There is only one `About this project` button
     """
 
     @property
@@ -159,9 +173,10 @@ class AboutKeyboard(Keyboard):
             (
                 create_button(
                     TextFormatter(
-                        "keyboard:copyrights",
+                        "keyboard:about",
                         self.lang_code
                     ).text,
+                    # See why in keyboard/admin.py
                     url="https://t.me/+FOsRd3bAe7o3YzFi"
                 ),
             ),

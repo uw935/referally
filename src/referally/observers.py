@@ -6,9 +6,13 @@ from aiogram.types import (
 )
 from aiogram import (
     F,
-    Router
+    Router,
+    Dispatcher
 )
 
+from .database import User
+from .texts import TextFormatter
+from .routers.user.menu import send_menu_message
 from .config import (
     Cache,
     Config
@@ -17,19 +21,6 @@ from .config import (
 
 router = Router()
 router.chat_member(F.chat.id == Config.CHANNEL_ID)
-
-
-@router.chat_member(F.new_chat_member.status == ChatMemberStatus.LEFT)
-async def channel_member_left_observer(member: ChatMemberUpdated) -> None:
-    """
-    Obsever for left / banned from channel events
-
-    :param member: Updated member data
-    """
-
-    # TODO remove from DB>.subscribed = False rn
-    # TODO Remove from local channel list. for user.
-    ...
 
 
 @router.channel_post(F.new_chat_title)
@@ -44,10 +35,57 @@ async def channel_title_observer(channel_post: Message) -> None:
     logger.info(f"New chat title: {Cache.chat_title}")
 
 
+@router.chat_member(F.new_chat_member.status == ChatMemberStatus.LEFT)
+@router.chat_member(F.new_chat_member.status == ChatMemberStatus.KICKED)
 @router.chat_member(F.new_chat_member.status == ChatMemberStatus.MEMBER)
-async def channel_member_observer(member: ChatMemberUpdated) -> None:
+async def channel_member_observer(
+    member: ChatMemberUpdated,
+    dispatcher: Dispatcher
+) -> None:
     """
+    Observer that is watching for channel' events with members
+
+    Remove / Kicked / Added
+
+    :param member: Telegram chat member
+    :param dispatcher: Current dispatcher instance
     """
 
-    # TODO обновлять - теперь он subscriberd
-    ...
+    user = await User(member.from_user.id).get()
+
+    if user is None:
+        return
+
+    await User(member.from_user.id).update(
+        subscribed=(
+            member.new_chat_member.status == ChatMemberStatus.MEMBER
+        ),
+        has_link=(
+            None
+            if member.new_chat_member.status != ChatMemberStatus.MEMBER
+            else True
+        )
+    )
+
+    if user.joined_by_user_id is not None:
+        if member.new_chat_member.status == ChatMemberStatus.MEMBER:
+            await User(user.joined_by_user_id).update(plus_referal_count=1)
+
+            await dispatcher.fsm.get_context(
+                member.bot,
+                int(member.from_user.id),
+                int(member.from_user.id)
+            ).clear()
+
+            await member.bot.send_message(
+                member.from_user.id,
+                TextFormatter(
+                    "refd_user:subscribed",
+                    member.from_user.language_code
+                ).text
+            )
+
+            await send_menu_message(member, from_bot=True)
+            return
+
+        await User(user.joined_by_user_id).update(plus_referal_count=-1)

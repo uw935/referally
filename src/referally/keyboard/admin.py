@@ -8,10 +8,33 @@ from .methods import (
 )
 
 
-class AdminSettingsKeyboard(Keyboard):
+class AdminUserListKeyboard(Keyboard):
     """
-    Administrator settings keyboard
+    Administrator Users List keyboard
+
+    There are `Ban` and `Back` buttons in here
     """
+
+    def __init__(
+        self,
+        user_id: int | str,
+        is_blocked: bool,
+        lang_code: str,
+        back_index: int | str = 0
+    ) -> None:
+        """
+        Initialization of Users List keyboard
+
+        :param user_id: Telegram user ID
+        :param is_blocked: True if user is blocked from the bot
+        :param lang_code: User's language code
+        :param back_index: Index for returning back to UsersList menu
+        """
+
+        self.user_id = user_id
+        self.block_or_unblock = "unban" if is_blocked else "ban"
+        self.lang_code = lang_code
+        self.back_index = back_index
 
     @property
     def markup(self) -> InlineKeyboardMarkup:
@@ -19,19 +42,10 @@ class AdminSettingsKeyboard(Keyboard):
             (
                 create_button(
                     TextFormatter(
-                        "keyboard:reset_data",
+                        f"keyboard:{self.block_or_unblock}",
                         self.lang_code
                     ).text,
-                    "RESET_DATA"
-                ),
-            ),
-            (
-                create_button(
-                    TextFormatter(
-                        "keyboard:captcha_settings",
-                        self.lang_code
-                    ).text,
-                    "CAPTCHA_SETTINGS"
+                    f"USER_{self.block_or_unblock.upper()}_{self.user_id}"
                 ),
             ),
             (
@@ -40,7 +54,7 @@ class AdminSettingsKeyboard(Keyboard):
                         "keyboard:back",
                         self.lang_code
                     ).text,
-                    "BACK"
+                    f"USERS_LIST_{self.back_index}"
                 ),
             ),
         )
@@ -48,7 +62,9 @@ class AdminSettingsKeyboard(Keyboard):
 
 class AdminMenuKeyboard(Keyboard):
     """
-    Administaror menu keyboard
+    Administaror Main Menu keyboard
+
+    There are `Statistics`, `Users List` and `About` buttons here
     """
 
     @property
@@ -75,10 +91,10 @@ class AdminMenuKeyboard(Keyboard):
             (
                 create_button(
                     TextFormatter(
-                        "keyboard:copyrights",
+                        "keyboard:about",
                         self.lang_code
                     ).text,
-                    # Anti-zpizdit' & remove copyrights
+                    # Anti-zpizdit' & change copyrights
                     # i know it's easy to find, but at least..
                     url="https://t.me/+FOsRd3bAe7o3YzFi"
                 ),

@@ -9,6 +9,7 @@ from aiogram.types import (
     CallbackQuery
 )
 
+from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
 from .menu import send_channel_link
@@ -19,6 +20,8 @@ from ...states import (
 
 
 router = Router()
+router.message.filter(CaptchaState.CAPTCHA)
+router.callback_query.filter(CaptchaState.CAPTCHA)
 
 
 async def send_captcha_message(message: Message, state: FSMContext) -> None:
@@ -103,6 +106,7 @@ async def captcha_proceed_handler(
 
         await state.clear()
         await state.set_state(ReffedUserState.MENU)
+        await User(callback.from_user.id).update(captcha_passed=True)
 
         await callback.answer(
             TextFormatter(
@@ -115,7 +119,7 @@ async def captcha_proceed_handler(
         return
 
     # There are 2 attempts
-    # but "captcha_attempt" is starting from 0, so we have 1 here.
+    # but "captcha_attempt" is starting from 0, so we have 1 here
     if state_data["captcha_attempt"] >= 1:
         await state.clear()
 

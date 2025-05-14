@@ -1,5 +1,6 @@
 import os
 import sys
+
 from loguru import logger
 from dotenv import (
     load_dotenv,
@@ -51,6 +52,7 @@ class Config:
     Const variables
     """
 
+    DB_URL: str = os.environ["DB_URL"]
     BOT_TOKEN: str = os.environ["BOT_TOKEN"]
     ADMIN_ID: int = int(os.environ["TELEGRAM_ADMIN_ID"])
     DEFAULT_LANG: str = os.environ["DEFAULT_LANG"].lower()

@@ -1,5 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup
 
+from ..config import Cache
 from .base import Keyboard
 from ..texts import TextFormatter
 from .methods import (
@@ -10,18 +11,21 @@ from .methods import (
 
 class SubscribeKeyboard(Keyboard):
     """
-    Base back keyboard markup
+    Subscription keyboard
+
+    There is only one `Subscribe` button
     """
 
-    def __init__(self, link: str, lang_code: str) -> None:
+    def __init__(self, lang_code: str, link: str = None) -> None:
         """
         Initialization of subscribe keyboard
 
-        :param link: Link to subscribe
-        :param lang_code: User's language code
+        :param lang_code: Language code of keyboard's text
+        :param link: Link to subscribe. Optional.
+        Defaults to `Cache.chat_invite_link`
         """
 
-        self.link = link
+        self.link = link or Cache.chat_invite_link
         self.lang_code = lang_code
 
     @property

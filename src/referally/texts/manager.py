@@ -1,7 +1,3 @@
-"""
-Text formatter manager
-"""
-
 import re
 from loguru import logger
 
@@ -23,17 +19,23 @@ class TextFormatter:
         path: str,
         lang_code: str = Config.DEFAULT_LANG,
         skip_md_check: bool = False,
-        /,
         **kwargs
     ) -> None:
         """
-        Initialization of Text
+        Initialization of TextFormatter
 
-        :param path: Path of the text from JSON's
-        example: ["text"]["subtext"] = "text:subtext"
-        :param skip_md_check: True if it should skip the Markdown
-        check for args in kwargs
+        :param path: Path of the text from JSON's. See `more about` it below
+        :param lang_code: Text's langauge code that is needed
+        :param skip_md_check: True if skip the Markdown check
+        for args in kwargs
         :param kwargs: Arguments that required in the text
+
+        ## More about `path`
+        It's the path to the text from .JSON, all names separated by ":"
+
+        Example
+            1. **keyboard:list:back** — references to back button text
+            in list in keyboard
         """
 
         locale_text = LocaleManager.get_text(lang_code)
@@ -49,11 +51,13 @@ class TextFormatter:
         self.text = locale_text
 
         for element in kwargs:
-            if skip_md_check is not None:
+            kwargs[element] = str(kwargs[element])
+
+            if skip_md_check is False:
                 kwargs[element] = re.sub(
                     r"([_*\[\]()~`>#+\-=|{}.!])",
                     r"\\\1",
-                    str(kwargs[element])
+                    kwargs[element]
                 )
 
             self.text = self.text.replace(
