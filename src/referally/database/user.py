@@ -157,22 +157,6 @@ class User:
 
         await _db_session.commit()
 
-    @connection
-    async def delete(self, _db_session: AsyncSession) -> None:
-        """
-        Delete User from database
-        """
-
-        if self.user_id is None:
-            return
-
-        await _db_session(
-            delete(UserModel)
-            .where(UserModel.user_id == self.user_id)
-        )
-
-        await _db_session.commit()
-
 
 class AllUsers:
     """
@@ -227,7 +211,7 @@ class UserCount:
 
         Examples
             1. (UserModel.referals_count >= 200, ) will return count of users
-            with ID more than 200
+            with referals count more than 200
         """
 
         count = await _db_session.execute(
@@ -286,7 +270,7 @@ class UserRating:
                 and_(
                     UserModel.user_id == user_id
                     and
-                    UserModel.blocked is not True
+                    UserModel.blocked.isnot(True)
                 )
             )
         )
@@ -296,13 +280,13 @@ class UserRating:
     @staticmethod
     @connection
     async def get_top(
-        top_range: int = 3,
+        limit: int = 3,
         _db_session: AsyncSession = None
     ) -> list[UserRatingTop]:
         """
         Get top users
 
-        :param top_range: How many top users should be returned. Optional
+        :param limit: Maximum number of top users to be returned. Optional
         :return: List of top users with UserRatingTop dataclass
         """
 
@@ -314,7 +298,7 @@ class UserRating:
             )
             .filter(UserModel.blocked.isnot(True))
             .order_by(UserModel.referals_count.desc())
-            .limit(top_range)
+            .limit(limit)
         )
 
         return [UserRatingTop(*result) for result in users.all()]
