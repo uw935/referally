@@ -78,7 +78,7 @@ async def start_handler(
         or is_member.status == ChatMemberStatus.KICKED
     )
 
-    command_args = command.args if command is not None else None
+    command_args = command.args
 
     user = await User(message.from_user.id).get()
 
@@ -87,9 +87,11 @@ async def start_handler(
     if user is None and is_member is True:
         command_args = None
 
-    if command_args is not None and command_args.isdigit() or\
-            user and user.has_link is False:
-        command_args = int(command_args)
+    if (command_args is not None and command_args.isdigit()) or\
+            (user and user.has_link is False):
+        
+        if command_args is not None:
+            command_args = int(command_args)
 
         if message.from_user.id == command_args:
             # If user exists and has_link and doin'
@@ -144,6 +146,9 @@ async def start_handler(
                     await user_menu.send_menu_message(message)
                     return
 
+                elif not is_member and user.has_link:
+                    await user_menu.send_channel_subscribe(message)
+                    return
                 # If user isn't member and he somehow appears here
                 # then probably it's just FSM got cleared
                 # so checking if he have passed the Captcha

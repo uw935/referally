@@ -91,7 +91,7 @@ class AdminMenuKeyboard(Keyboard):
             (
                 create_button(
                     TextFormatter(
-                        "keyboard:copyrights",
+                        "keyboard:about",
                         self.lang_code
                     ).text,
                     # Anti-zpizdit' & change copyrights

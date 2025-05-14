@@ -6,8 +6,7 @@ from .base import (
 )
 from .admin import (
     AdminMenuKeyboard,
-    AdminUserListKeyboard,
-    AdminSettingsKeyboard
+    AdminUserListKeyboard
 )
 from .methods import (
     create_button,
@@ -23,6 +22,5 @@ __all__ = (
     "SubscribeKeyboard",
     "AdminMenuKeyboard",
     "PaginationKeyboard",
-    "AdminUserListKeyboard",
-    "AdminSettingsKeyboard"
+    "AdminUserListKeyboard"
 )

@@ -32,7 +32,8 @@ class ReffedUserVerification:
             if args[0] is not None:
                 user = await User(args[0].from_user.id).get()
 
-                if user.joined_by_user_id is not None and not user.has_link:
+                if user and user.joined_by_user_id is not None \
+                        and not user.has_link:
                     await kwargs["state"].set_state(ReffedUserState.MENU)
                     return
 

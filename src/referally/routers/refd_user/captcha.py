@@ -9,6 +9,7 @@ from aiogram.types import (
     CallbackQuery
 )
 
+from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
 from .menu import send_channel_link
@@ -105,6 +106,7 @@ async def captcha_proceed_handler(
 
         await state.clear()
         await state.set_state(ReffedUserState.MENU)
+        await User(callback.from_user.id).update(captcha_passed=True)
 
         await callback.answer(
             TextFormatter(

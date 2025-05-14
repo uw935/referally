@@ -16,13 +16,16 @@ from ...keyboard import (
 @SubscriptionVerification.check
 async def send_menu_message(
     message: Message,
-    is_edit: bool = False
+    is_edit: bool = False,
+    from_bot: bool = False
 ) -> None:
     """
     Send default menu message for users
 
     :param message: Telegram message
     :param is_edit: Whether this message should be edited
+    :param from_bot: Send message from bot.
+    Helpful when dealing with channel events
     """
 
     user_ref_count = await User(message.from_user.id).get()
@@ -43,6 +46,14 @@ async def send_menu_message(
 
     if is_edit:
         await message.edit_text(text, reply_markup=reply_markup)
+        return
+
+    if from_bot:
+        await message.bot.send_message(
+            message.from_user.id,
+            text,
+            reply_markup=reply_markup
+        )
         return
 
     await message.answer(text, reply_markup=reply_markup)

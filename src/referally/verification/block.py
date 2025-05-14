@@ -29,7 +29,7 @@ class BlockedVerification:
             if args[0] is not None:
                 user = await User(args[0].from_user.id).get()
 
-                if user.blocked:
+                if user and user.blocked:
                     await args[0].answer(
                         TextFormatter(
                             "error:block",

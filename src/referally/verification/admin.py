@@ -35,7 +35,11 @@ class AdminVerification:
                 user: User = args[0].from_user
 
                 if user.id == Config.ADMIN_ID:
-                    user_not_in_db = await UserDb(user.id).add()
+                    user_not_in_db = await UserDb(user.id).add(
+                        has_link=True,
+                        subscribed=True,
+                        username=user.username
+                    )
 
                     if user_not_in_db is True:
                         await args[0].answer(

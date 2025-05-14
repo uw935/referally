@@ -42,13 +42,13 @@ class SubscriptionVerification:
                     or user_subscribed.status == ChatMemberStatus.KICKED
                 )
 
-                answer_function = (
-                    args[0].answer
-                    if isinstance(args[0], Message)
-                    else args[0].message.answer
-                )
-
                 if user_subscribed is False:
+                    answer_function = (
+                        args[0].answer
+                        if isinstance(args[0], Message)
+                        else args[0].message.answer
+                    )
+
                     await answer_function(
                         TextFormatter(
                             "user:subscription_require",

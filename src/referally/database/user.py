@@ -39,6 +39,9 @@ class User:
         :return: UserModel with all the data
         """
 
+        if self.user_id is None:
+            return
+
         query = await _db_session.execute(
             select(UserModel)
             .where(UserModel.user_id == self.user_id)
@@ -64,6 +67,9 @@ class User:
         :param joined_by_user_id: User ID of whom him was referred. Optional
         :return: True if all successful, False if user was already exist
         """
+
+        if self.user_id is None:
+            return
 
         current_user = await self.get()
 
@@ -91,6 +97,7 @@ class User:
         subscribed: bool | None = None,
         has_link: bool | None = None,
         username: str = "_none",
+        captcha_passed: bool | None = None,
         blocked: bool | None = None,
         plus_referal_count: int | None = None,
         _db_session: AsyncSession = None
@@ -101,6 +108,8 @@ class User:
         :param subscribed: True if user subscribed to the channel
         :param has_link: True if user have his referal link
         :param username: Telegram Username
+        :param captcha_passed: True if user has passed the captcha
+        :param blocked: True if user blocked from the bot
         :param plus_referal_count: Plus referal count of this user
 
         ## More about `plus_referal_count`
@@ -110,6 +119,9 @@ class User:
             1. -5 will remove 5 referals from this user (because (+) + (-) = -)
             2. 5 (without sign) adds 5 referalls to this user
         """
+
+        if self.user_id is None:
+            return
 
         to_update = {}
 
@@ -124,6 +136,9 @@ class User:
 
         if blocked is not None:
             to_update["blocked"] = blocked
+
+        if captcha_passed is not None:
+            to_update["captcha_passed"] = captcha_passed
 
         if plus_referal_count is not None:
             to_update["referals_count"] = (
@@ -148,6 +163,9 @@ class User:
         Delete User from database
         """
 
+        if self.user_id is None:
+            return
+
         await _db_session(
             delete(UserModel)
             .where(UserModel.user_id == self.user_id)
@@ -164,8 +182,8 @@ class AllUsers:
     @staticmethod
     @connection
     async def get(
-        limit: int = 0,
-        offset: int = 0,
+        limit: int = None,
+        offset: int = None,
         _db_session: AsyncSession = None
     ) -> list[UserModel]:
         """

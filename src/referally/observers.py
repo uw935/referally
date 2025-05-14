@@ -77,14 +77,15 @@ async def channel_member_observer(
                 int(member.from_user.id)
             ).clear()
 
-            await member.answer(
+            await member.bot.send_message(
+                member.from_user.id,
                 TextFormatter(
                     "refd_user:subscribed",
                     member.from_user.language_code
-                )
+                ).text
             )
 
-            await send_menu_message(member)
+            await send_menu_message(member, from_bot=True)
             return
 
         await User(user.joined_by_user_id).update(plus_referal_count=-1)

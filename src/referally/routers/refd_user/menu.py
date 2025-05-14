@@ -22,7 +22,8 @@ async def send_channel_link(
     :param state: User's state. Optional
     """
 
-    await state.set_state(ReffedUserState.MENU)
+    if state is not None:
+        await state.set_state(ReffedUserState.MENU)
 
     await message.answer(
         TextFormatter(
