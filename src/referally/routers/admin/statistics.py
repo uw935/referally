@@ -32,7 +32,7 @@ async def admin_statistics_handler(callback: CallbackQuery) -> None:
         )
     )
 
-    top_users = await UserRating.get_top(3)
+    top_users = await UserRating.get_top(5)
     users_rating = ""
 
     for user in top_users:

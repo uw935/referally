@@ -108,6 +108,7 @@ async def captcha_proceed_handler(
         await state.set_state(ReffedUserState.MENU)
         await User(callback.from_user.id).update(captcha_passed=True)
 
+        await send_channel_link(callback.message)
         await callback.answer(
             TextFormatter(
                 "captcha:success",
@@ -115,7 +116,6 @@ async def captcha_proceed_handler(
             ).text,
             True
         )
-        await send_channel_link(callback.message)
         return
 
     # There are 2 attempts

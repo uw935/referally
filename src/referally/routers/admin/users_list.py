@@ -163,7 +163,7 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
             callback.from_user.language_code,
             user_id=user.id,
             tgid=user.user_id,
-            username=user.username,
+            username=f"@{user.username}" if user.username else no_text,
             reg_timestamp=datetime.fromtimestamp(user.created_at)
             .strftime("%d.%m.%y %H:%M"),
             was_refered=yes_text if user.joined_by_user_id is not None

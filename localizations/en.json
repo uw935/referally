@@ -1,0 +1,68 @@
+{
+    "admin": {
+        "start": "👋 *Hi\\!*\n\nYou're successfully installed *Referally* and now you can run affiliate program in your channel\n\n>*Referally* — is an open-source project, developed [by Mark](https://t.me/+FOsRd3bAe7o3YzFi) withint the \"*Peace / Code / May* project\"\n\n[Learn more about it](https://github.com/uw935/referally)",
+        "startup": "*✅ Bot have been started*\n\nTo access your administrator panel, just send 2 any random messages",
+        "shutdown": "*🟠 Bot have been turned off*\n\n_Thank you for choosing Referally_",
+        "users_list": {
+            "text": "👤 *Users count*\n\nIn total: *{users_count} users*"
+        },
+        "statistics": "📊 *Statistics*\n\nAll the users in affiliate program: *{users_count}*\nNew subscribers: \\+*{new_subscribers} in total*\n\n⭐️ *Rating \\(TOP\\-5\\)*\n{users_rating}",
+        "user_view": {
+            "text": "👤 *User*\n\n*Telegram ID*: `{tgid}`\n*Username*: {username}\n*Registrated date*: `{reg_timestamp}`\n\n*Was referred*: {was_refered}\n*Can invite*: {has_link}\n*Subscribed to the channel*: {is_subscribed}\n\n*Invited*: \\+{referals_count} new subscribers"
+        },
+        "yes": "yes",
+        "no": "no",
+        "unbanned": "User have been successfully unbanned",
+        "banned": "User have been successfully banned\n\nNow his link — frozen",
+        "menu": "🎛 *Main menu*\n\n_Thank you for choosing Referally_"
+    },
+    "user": {
+        "start": "👋 *Hi\\!*\n\n🔗 In this bot you can get your referral link for the channel\n\nYou can distribute it everywhere, but you mustn't spam or violating the Telegram rules",
+        "menu": "📚 *Main menu*\n\n🔗 *Your referral link*\n`{ref_link}`\n\nℹ️ *Information*\nYour rating: *{rating_number}*\nInvited: *\\+{users}*",
+        "already_signed": "🫠 *You can't join by someone's link*\n\n_And what is it for?_",
+        "subscription_require": "🫡 *To use the bot, you need to subscribe*\n\nYou can make it by the button below"
+    },
+    "refd_user": {
+        "start": "👋 *Hi\\!* It's the \"adapter\" for the channel\n\n👇 To subscribe *\"{channel_name}\"* channel, you have to complete the Referally Captcha\\. It's easy\\. Will take a few minutes",
+        "channel": "😌 *Captcha successfully passed*\n\nThank you\\. Now you can subscribe the channel by the button below",
+        "can_ref": "🤩 *Now you can invite your friends to the channel\\!\n\nThe more, the better",
+        "subscribed": "😍 *Welcome to channel*\n\nHope you'll like it here\n\n👇 By the way, now you can also invite your friends"
+    },
+    "error": {
+        "user_not_found": "😔 User not found",
+        "join_yourself": "🫤 *You can't join the channel by your own link*\n\nBetter share it with your friends instead",
+        "outdatedcaptcha": "🧐 Captcha is outdated\n\nPlease use new one",
+        "captcha_too_many_attempts": "🤖 Unfortunately, you've run out of attempts\n\nTry again",
+        "captcha_failed": "😐 Wrong button",
+        "no_state": "😵‍💫 *Unfortunately, I didn't get that*\n\nPlease send this message again",
+        "cant_block_yourself": "You can't block yourself",
+        "block": "❌ *You've been blocked by the administrator*\n\nNow your link — frozen\\. It will accept new subscribers, but it won't take part in rating\n\nFor more information about the ban contact administrators of the channel"
+    },
+    "captcha": {
+        "text": "🤖 *Referally Captcha*\n\nPress the button where there is *{element}* on it",
+        "success": "Yeah! Captcha successfully passed\n\nIt seems you're really not a bot",
+        "pig": "a pig",
+        "policeman": "a man in a blue cap",
+        "programmer": "a man with a notebook, possibly a programmer",
+        "santa": "a man with a white beard and the white hat",
+        "penguin": "a penguin",
+        "artist": "an artist",
+        "ninja": "a ninja",
+        "cat": "a kitty"
+    },
+    "keyboard": {
+        "list": {
+            "back": "⬅️",
+            "forward": "▶️"
+        },
+        "back": "Back",
+        "statistics": "Statistics",
+        "users_list": "Users list",
+        "subscribe": "Channel",
+        "open_profile": "Open profile",
+        "ban": "Ban",
+        "unban": "Unban",
+        "user_button": "ID {user_id}",
+        "about": "About Referally"
+    }
+}
