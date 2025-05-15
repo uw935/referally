@@ -13,26 +13,25 @@ router.message.filter(ReffedUserState.MENU)
 
 async def send_channel_link(
     message: Message,
-    state: FSMContext = None
+    state: FSMContext = None,
+    lang_code: str = None
 ) -> None:
     """
     Send link to channel for Refered Users
 
     :param message: Telegram message
     :param state: User's state. Optional
+    :param lang_code: User's language code. Optional
     """
 
     if state is not None:
         await state.set_state(ReffedUserState.MENU)
 
+    lang_code = lang_code or message.from_user.language_code
+
     await message.answer(
-        TextFormatter(
-            "refd_user:channel",
-            message.from_user.language_code
-        ).text,
-        reply_markup=SubscribeKeyboard(
-            message.from_user.language_code
-        ).markup
+        TextFormatter("refd_user:channel", lang_code).text,
+        reply_markup=SubscribeKeyboard(lang_code).markup
     )
 
 
