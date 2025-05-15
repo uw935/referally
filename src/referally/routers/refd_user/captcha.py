@@ -108,7 +108,10 @@ async def captcha_proceed_handler(
         await state.set_state(ReffedUserState.MENU)
         await User(callback.from_user.id).update(captcha_passed=True)
 
-        await send_channel_link(callback.message)
+        await send_channel_link(
+            callback.message,
+            lang_code=callback.from_user.language_code
+        )
         await callback.answer(
             TextFormatter(
                 "captcha:success",

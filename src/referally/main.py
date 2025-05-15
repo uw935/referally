@@ -3,6 +3,7 @@ import asyncio
 from loguru import logger
 from aiogram.enums.chat_type import ChatType
 from aiogram.enums.parse_mode import ParseMode
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.chat_member_status import ChatMemberStatus
 from aiogram import (
@@ -96,15 +97,18 @@ async def startup_handler(bot: Bot) -> None:
     users = await AllUsers.get()
 
     for user in users:
-        is_member = await bot.get_chat_member(
-            Config.CHANNEL_ID,
-            user.user_id
-        )
+        try:
+            is_member = await bot.get_chat_member(
+                Config.CHANNEL_ID,
+                user.user_id
+            )
 
-        is_member = not (
-            is_member.status == ChatMemberStatus.LEFT
-            or is_member.status == ChatMemberStatus.KICKED
-        )
+            is_member = not (
+                is_member.status == ChatMemberStatus.LEFT
+                or is_member.status == ChatMemberStatus.KICKED
+            )
+        except TelegramBadRequest:
+            is_member = False
 
         if user.subscribed != is_member:
             logger.info(f"Updating old subscription user: {user.user_id}")

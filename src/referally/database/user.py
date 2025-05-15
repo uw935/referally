@@ -7,8 +7,7 @@ from sqlalchemy import (
     func,
     insert,
     select,
-    update,
-    delete
+    update
 )
 
 from .models import UserModel
