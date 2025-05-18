@@ -2,8 +2,8 @@ version: "3.9"
 name: "Referally Telegram Bot"
 
 services:
-  bot:
-    build: .
+  # bot:
+  #   build: .
 
   redis:
     image: redis:7.4.3-bookworm
