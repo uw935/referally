@@ -1,7 +1,7 @@
 {
     "admin": {
         "start": "👋 *Hi\\!*\n\nYou're successfully installed *Referally* and now you can run affiliate program in your channel\n\n>*Referally* — is an open-source project, developed [by Mark](https://t.me/+FOsRd3bAe7o3YzFi) withint the \"*Peace / Code / May* project\"\n\n[Learn more about it](https://github.com/uw935/referally)",
-        "startup": "*✅ Bot have been started*\n\nTo access your administrator panel, just send 2 any random messages",
+        "startup": "*✅ Bot have been started*\n\n*Tip*: if you're starting for the first time, you need to send 2 any random messages to get access to the administrator panel",
         "shutdown": "*🟠 Bot have been turned off*\n\n_Thank you for choosing Referally_",
         "users_list": {
             "text": "👤 *Users count*\n\nIn total: *{users_count} users*"

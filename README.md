@@ -23,6 +23,7 @@ _Создано в рамках проекта [Мир. Код. Май](https://
 2. `PostgreSQL 16+` с asyncpg + SQLAlchemy
 3. `Docker`
 4. `Alembic`
+5. `Redis` — для FSM
 
 # Как это работает?
 **Довольно просто**:

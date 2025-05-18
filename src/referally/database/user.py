@@ -255,23 +255,23 @@ class UserRating:
         :return: User's rating
         """
 
-        user = await _db_session.execute(
+        subquery = (
             select(
                 UserModel.user_id,
                 # Ranking users by UserModel.referals_count
                 # and calling their position "rating_number"
                 # so we can access it below in return
                 func.rank()
-                .over(order_by=UserModel.referals_count)
+                .over(order_by=UserModel.referals_count.desc())
                 .label("rating_number")
             )
-            .where(
-                and_(
-                    UserModel.user_id == user_id
-                    and
-                    UserModel.blocked.isnot(True)
-                )
-            )
+            .where(UserModel.blocked.isnot(True))
+            .subquery()
+        )
+
+        user = await _db_session.execute(
+            select(subquery.c.user_id, subquery.c.rating_number)
+            .where(subquery.c.user_id == user_id)
         )
 
         return user.first().rating_number

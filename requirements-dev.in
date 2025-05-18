@@ -5,4 +5,6 @@ loguru
 sqlalchemy[asyncio]
 asyncpg
 alembic
+ruff
+pip-tools
 redis[hiredis]

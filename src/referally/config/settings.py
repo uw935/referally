@@ -52,7 +52,14 @@ class Config:
     Const variables
     """
 
-    DB_URL: str = os.environ["DB_URL"]
+    DB_URL: str = (
+        f"postgresql+asyncpg://"
+        f"{os.environ['DB_USER']}:"
+        f"{os.environ['DB_PASSWORD']}@"
+        f"{os.environ['DB_HOST']}:"
+        f"{os.environ['DB_PORT']}/"
+        f"{os.environ['DB_NAME']}"
+    )
     BOT_TOKEN: str = os.environ["BOT_TOKEN"]
     ADMIN_ID: int = int(os.environ["TELEGRAM_ADMIN_ID"])
     DEFAULT_LANG: str = os.environ["DEFAULT_LANG"].lower()

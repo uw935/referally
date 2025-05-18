@@ -1,9 +1,11 @@
 import asyncio
 
 from loguru import logger
+from redis.asyncio.client import Redis
 from aiogram.enums.chat_type import ChatType
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.fsm.storage.redis import RedisStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.chat_member_status import ChatMemberStatus
 from aiogram import (
@@ -25,7 +27,7 @@ from .config import (
 )
 
 
-dp = Dispatcher()
+dp = Dispatcher(storage=RedisStorage(Redis(decode_responses=True)))
 
 
 async def main() -> None:
