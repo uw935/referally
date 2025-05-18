@@ -53,12 +53,12 @@ class Config:
     """
 
     DB_URL: str = (
-        "postgresql+asyncpg://"
-        f"{os.environ['DB_USER']}"
-        f":{os.environ['DB_PASSWORD']}"
-        f"@{os.environ['DB_HOST']}"
-        f":{os.environ['DB_PORT']}"
-        f"/{os.environ['DB_NAME']}"
+        f"postgresql+asyncpg://"
+        f"{os.environ['DB_USER']}:"
+        f"{os.environ['DB_PASSWORD']}@"
+        f"{os.environ['DB_HOST']}:"
+        f"{os.environ['DB_PORT']}/"
+        f"{os.environ['DB_NAME']}"
     )
     BOT_TOKEN: str = os.environ["BOT_TOKEN"]
     ADMIN_ID: int = int(os.environ["TELEGRAM_ADMIN_ID"])
