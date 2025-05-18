@@ -3,7 +3,7 @@ name: "Referally Telegram Bot"
 
 services:
   bot:
-    build: referally.Dockerfile
+    build: .
 
   redis:
     image: redis:7.4.3-bookworm
