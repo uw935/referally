@@ -1,0 +1,10 @@
+aiogram
+flake8
+python-dotenv
+loguru
+sqlalchemy[asyncio]
+asyncpg
+alembic
+ruff
+pip-tools
+redis[hiredis]

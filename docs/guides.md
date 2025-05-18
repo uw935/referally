@@ -26,9 +26,14 @@ rn .env-example .env
 vim .env
 ```
 ```env
-DB_URL="postgresql+asyncpg://{сюда вставить DB_USER}:{пароль}@{ip}:{port}/{название базы данных}"
-BOT_TOKEN="" # Токен бота из @BotFather в Телеграм
-TELEGRAM_ADMIN_ID="" # Твой Telegram ID (можно взять с @getmyid_bot)
+DB_HOST="" # хост для подключения. IP или домен
+DB_PORT="5432" # порт
+DB_USER="" # пользователь в БД
+DB_PASSWORD="" # пароль от базы данных
+DB_NAME="" # название базы данных
+
+BOT_TOKEN="" # токен бота из @BotFather в Телеграм
+TELEGRAM_ADMIN_ID="" # твой Telegram ID (можно взять с @getmyid_bot)
 DEFAULT_LANG="ru" # язык по умолчанию в формате ISO 639-1
 CHANNEL_ID="" # Telegram ID канала, его тоже можно взять с @getmyid_bot, переслав оттуда любое сообщение
 ```
