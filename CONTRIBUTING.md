@@ -18,7 +18,7 @@
 1. Установить библиотеки и обновить PIP
 ```bash
 python -m pip install -U pip
-python -m pip install requirements-dev.txt
+python -m pip install -r requirements-dev.txt
 ```
 2. Настроить `.env`. Информация о нем есть в [Гайдах](./docs/guides.md)
 3. Запустить Redis (без приложения). Можно, закоментировав в `docker-compose.yml` строчки с сервисом `bot`
