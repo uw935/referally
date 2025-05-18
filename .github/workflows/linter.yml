@@ -2,8 +2,6 @@ name: Linter checking
 
 on:
   push:
-    branches: [ feature/redis ] # for testing
-  pull_request:
     branches: [ master ]
 
 jobs:
