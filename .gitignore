@@ -4,3 +4,5 @@ env
 logs
 *.log
 __pycache__
+.ruff_cache
+redis_data

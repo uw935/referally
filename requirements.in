@@ -5,4 +5,4 @@ loguru
 sqlalchemy[asyncio]
 asyncpg
 alembic
-pydantic
+redis[hiredis]
