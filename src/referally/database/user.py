@@ -3,7 +3,6 @@ from dataclasses import dataclass
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
-    and_,
     func,
     insert,
     select,
