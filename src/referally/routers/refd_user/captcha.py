@@ -8,18 +8,14 @@ from aiogram import (
 )
 from aiogram.types import (
     Message,
-    CallbackQuery,
-    User as TelegramUser
+    CallbackQuery
 )
 
 from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
 from .menu import send_channel_link
-from ...keyboard import (
-    create_markup,
-    create_button
-)
+from ...keyboard import create_markup
 from ...states import (
     CaptchaState,
     ReffedUserState
