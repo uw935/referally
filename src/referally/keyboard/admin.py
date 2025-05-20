@@ -96,7 +96,7 @@ class AdminMenuKeyboard(Keyboard):
                     ).text,
                     # Anti-zpizdit' & change copyrights (that why it's not const)
                     # i know it's easy to find, but at least..
-                    url="https://github.com/uw935/referallyi"
+                    url="https://github.com/uw935/referally"
                 ),
             )
         )
