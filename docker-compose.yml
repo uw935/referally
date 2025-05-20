@@ -4,6 +4,8 @@ name: "referally-telegram-bot"
 services:
   bot:
     build: .
+    volumes:
+      - "./src/logs:/build/logs"
     depends_on:
       - redis
     restart: unless-stopped
@@ -17,6 +19,6 @@ services:
       - "./redis_data:/data"
       - "./redis.conf:/usr/local/etc/redis/redis.conf"
     ports:
-      - "6380:6379"
+      - "6379:6379"
     command: redis-server /usr/local/etc/redis/redis.conf
     restart: unless-stopped

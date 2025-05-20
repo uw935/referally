@@ -50,7 +50,7 @@ async def send_captcha_message(
     lang_code = lang_code or message.from_user.language_code
     keyboard = json.loads(state_data["captcha_keyboard"])["inline_keyboard"]
 
-    message = await message.answer(
+    await message.answer(
         TextFormatter(
             "captcha:text",
             lang_code,
