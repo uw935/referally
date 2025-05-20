@@ -30,8 +30,7 @@ from .config import (
 dp = Dispatcher(
     storage=RedisStorage(
         Redis(
-            "redis",
-            6380,
+            host="redis",
             decode_responses=True
         )
     )

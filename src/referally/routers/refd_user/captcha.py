@@ -8,18 +8,14 @@ from aiogram import (
 )
 from aiogram.types import (
     Message,
-    CallbackQuery,
-    User as TelegramUser
+    CallbackQuery
 )
 
 from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
 from .menu import send_channel_link
-from ...keyboard import (
-    create_markup,
-    create_button
-)
+from ...keyboard import create_markup
 from ...states import (
     CaptchaState,
     ReffedUserState
@@ -54,7 +50,7 @@ async def send_captcha_message(
     lang_code = lang_code or message.from_user.language_code
     keyboard = json.loads(state_data["captcha_keyboard"])["inline_keyboard"]
 
-    message = await message.answer(
+    await message.answer(
         TextFormatter(
             "captcha:text",
             lang_code,
