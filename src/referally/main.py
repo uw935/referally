@@ -27,7 +27,15 @@ from .config import (
 )
 
 
-dp = Dispatcher(storage=RedisStorage(Redis(decode_responses=True)))
+dp = Dispatcher(
+    storage=RedisStorage(
+        Redis(
+            "redis",
+            6380,
+            decode_responses=True
+        )
+    )
+)
 
 
 async def main() -> None:

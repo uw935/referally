@@ -56,6 +56,11 @@ async def channel_member_observer(
     if user is None:
         return
 
+    if member.new_chat_member.status == ChatMemberStatus.MEMBER:
+        logger.info(f"New user just subscribed: {member.from_user.id}")
+    else:
+        logger.info(f"New user just unsubscribed: {member.from_user.id}")
+
     await User(member.from_user.id).update(
         subscribed=(
             member.new_chat_member.status == ChatMemberStatus.MEMBER
@@ -67,7 +72,7 @@ async def channel_member_observer(
         )
     )
 
-    if user.joined_by_user_id is not None:
+    if user.joined_by_user_id is not None and user.captcha_passed:
         if member.new_chat_member.status == ChatMemberStatus.MEMBER:
             await User(user.joined_by_user_id).update(plus_referal_count=1)
 
@@ -86,6 +91,11 @@ async def channel_member_observer(
             )
 
             await send_menu_message(member, from_bot=True)
+            return
+
+        # If bot didn't catch his subscription
+        # it seems user subscribed when he didn't passed the captcha
+        if not user.subscribed:
             return
 
         await User(user.joined_by_user_id).update(plus_referal_count=-1)
