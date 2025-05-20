@@ -225,15 +225,22 @@ class UserCount:
 class UserRatingTop:
     """
     Dataclass for UserRatingTop
-
-    :param user_id: Telegram user ID
-    :param username: Telegram username
-    :param referals_count: User's referals count
     """
 
     user_id: int
+    """
+    Telegram user ID
+    """
+
     username: str | None
+    """
+    Telegram username    
+    """
+
     referals_count: int
+    """
+    User's referals count
+    """
 
 
 class UserRating:
