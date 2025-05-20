@@ -9,6 +9,7 @@ However there is another goal for this. Read more in /docs/product.md
 
 import time
 import random
+from dataclasses import dataclass
 
 from aiogram.types import (
     CallbackQuery,
@@ -34,14 +35,26 @@ CAPTCHA_OBJECTS: dict = {
 }
 
 
+@dataclass(frozen=True)
 class GeneratedCaptcha:
     """
     Datatype for generated captcha
     """
 
     id: int
+    """
+    Captcha unique ID
+    """
+
     text: str
+    """
+    Captcha text to check
+    """
+
     keyboard: InlineKeyboardMarkup
+    """
+    Captcha keyboard
+    """
 
 
 class Captcha:
@@ -77,19 +90,18 @@ class Captcha:
         :return: ID, text for display and verify and inline keyboard
         """
 
-        result = GeneratedCaptcha
-        result.id = int(time.time())
+        captcha_id = int(time.time())
 
         captcha_objects_keys = list(CAPTCHA_OBJECTS.keys())
 
-        result.text = random.choice(captcha_objects_keys)
-        captcha_objects_keys.remove(result.text)
+        text = random.choice(captcha_objects_keys)
+        captcha_objects_keys.remove(text)
 
         random_button_index = random.randint(0, CAPTCHA_MAX_OBJECTS - 1)
         buttons = []
 
         for button_index in range(0, CAPTCHA_MAX_OBJECTS):
-            element = result.text
+            element = text
 
             # This made for replacing "verify" button
             # in the random position
@@ -100,10 +112,14 @@ class Captcha:
             buttons.append(
                 create_button(
                     f"{CAPTCHA_OBJECTS[element]}",
-                    f"{self.callback}_{result.id}_{element}"
+                    f"{self.callback}_{captcha_id}_{element}"
                 )
             )
 
-        result.keyboard = create_markup(buttons)
+        keyboard = create_markup(buttons)
 
-        return result
+        return GeneratedCaptcha(
+            captcha_id,
+            text,
+            keyboard
+        )

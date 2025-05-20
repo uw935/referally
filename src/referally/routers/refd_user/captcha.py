@@ -1,3 +1,5 @@
+import json
+
 from loguru import logger
 from aiogram.fsm.context import FSMContext
 from aiogram import (
@@ -6,13 +8,18 @@ from aiogram import (
 )
 from aiogram.types import (
     Message,
-    CallbackQuery
+    CallbackQuery,
+    User as TelegramUser
 )
 
 from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
 from .menu import send_channel_link
+from ...keyboard import (
+    create_markup,
+    create_button
+)
 from ...states import (
     CaptchaState,
     ReffedUserState
@@ -24,39 +31,61 @@ router.message.filter(CaptchaState.CAPTCHA)
 router.callback_query.filter(CaptchaState.CAPTCHA)
 
 
-async def send_captcha_message(message: Message, state: FSMContext) -> None:
+async def send_captcha_message(
+    message: Message,
+    state: FSMContext,
+    lang_code: str = None
+) -> None:
     """
     Sending message with captcha in it
 
     :param message: Telegram message
     :param state: User's state
+    :param lang_code: User's language code. Needed if the message was sent by
+    the bot.
     """
 
     state_data = await state.get_data()
 
-    if state_data.get("captcha_data") is None:
-        await start_captcha_process(message, state)
+    if state_data.get("captcha_id") is None:
+        await start_captcha_process(message, state, lang_code)
         return
+
+    lang_code = lang_code or message.from_user.language_code
+    keyboard = json.loads(state_data["captcha_keyboard"])["inline_keyboard"]
 
     message = await message.answer(
         TextFormatter(
             "captcha:text",
-            message.from_user.language_code,
+            lang_code,
             element=TextFormatter(
-                f"captcha:{state_data['captcha_data'].text}",
-                message.from_user.language_code
+                f"captcha:{state_data['captcha_text']}",
+                lang_code
             ).text
         ).text,
-        reply_markup=state_data["captcha_data"].keyboard
+        reply_markup=create_markup(
+            *[
+                [
+                    button for button in keyboard[index]
+                ]
+                for index in range(0, len(keyboard))
+            ]
+        )
     )
 
 
-async def start_captcha_process(message: Message, state: FSMContext) -> None:
+async def start_captcha_process(
+    message: Message,
+    state: FSMContext,
+    lang_code: str = None
+) -> None:
     """
     Starting captcha point
 
     :param message: Telegram message
     :param state: User's state
+    :param lang_code: User's language code, if message was sent by the bot.
+    Helpful for callbacks
     """
 
     await state.set_state(CaptchaState.CAPTCHA)
@@ -65,11 +94,13 @@ async def start_captcha_process(message: Message, state: FSMContext) -> None:
     logger.info(f"Generated captcha with ID: {captcha.id}")
 
     await state.set_data({
-        "captcha_data": captcha,
+        "captcha_keyboard": captcha.keyboard.model_dump_json(),
+        "captcha_text": captcha.text,
+        "captcha_id": captcha.id,
         "captcha_attempt": 0
     })
 
-    await send_captcha_message(message, state)
+    await send_captcha_message(message, state, lang_code)
 
 
 @router.callback_query(F.data[:15] == "CAPTCHA_PROCEED")
@@ -90,8 +121,8 @@ async def captcha_proceed_handler(
     captcha_id = captcha_data[0]
     captcha_text = captcha_data[1]
 
-    if state_data.get("captcha_data") is None or \
-            captcha_id != str(state_data["captcha_data"].id):
+    if state_data.get("captcha_id") is None or \
+            captcha_id != str(state_data["captcha_id"]):
         await callback.answer(
             TextFormatter(
                 "error:outdatedcaptcha",
@@ -101,7 +132,7 @@ async def captcha_proceed_handler(
         )
         return
 
-    if captcha_text == state_data["captcha_data"].text:
+    if captcha_text == state_data["captcha_text"]:
         await callback.message.delete()
 
         await state.clear()
@@ -135,7 +166,11 @@ async def captcha_proceed_handler(
         )
 
         await callback.message.delete()
-        await start_captcha_process(callback.message, state)
+        await start_captcha_process(
+            callback.message,
+            state,
+            callback.from_user.language_code
+        )
         return
 
     state_data["captcha_attempt"] += 1

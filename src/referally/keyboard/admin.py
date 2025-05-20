@@ -94,9 +94,9 @@ class AdminMenuKeyboard(Keyboard):
                         "keyboard:about",
                         self.lang_code
                     ).text,
-                    # Anti-zpizdit' & change copyrights
+                    # Anti-zpizdit' & change copyrights (that why it's not const)
                     # i know it's easy to find, but at least..
-                    url="https://t.me/+FOsRd3bAe7o3YzFi"
+                    url="https://github.com/uw935/referallyi"
                 ),
             )
         )

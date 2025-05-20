@@ -177,7 +177,7 @@ class AboutKeyboard(Keyboard):
                         self.lang_code
                     ).text,
                     # See why in keyboard/admin.py
-                    url="https://t.me/+FOsRd3bAe7o3YzFi"
+                    url="https://github.com/uw935/referally"
                 ),
             ),
         )
