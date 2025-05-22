@@ -1,7 +1,6 @@
 import time
 from dataclasses import dataclass
 
-from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
     func,
@@ -152,7 +151,7 @@ class User:
             return
 
         UserLog(self.user_id, username=username).log(
-            f"Updating values: "
+            "Updating values: "
             # Format will be 
             # updating values: username=..., blocked=...
             + ', '.join(f'{key}={value}' for key, value in to_update.items())
