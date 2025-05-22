@@ -6,8 +6,8 @@ from aiogram.types import (
 
 def create_button(
     text: str,
-    callback: str = None,
-    url: str = None
+    callback: str | None = None,
+    url: str | None = None
 ) -> InlineKeyboardButton:
     """
     Create inline keyboard button

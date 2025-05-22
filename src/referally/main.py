@@ -14,6 +14,7 @@ from aiogram import (
     Dispatcher
 )
 
+from .log import UserLog
 from .texts import TextFormatter
 from .routers.menu import router as menu_router
 from .observers import router as observer_router
@@ -120,7 +121,9 @@ async def startup_handler(bot: Bot) -> None:
             is_member = False
 
         if user.subscribed != is_member:
-            logger.info(f"Updating old subscription user: {user.user_id}")
+            UserLog(user.user_id, subscribed=user.subscribed).log(
+                "Updating old subscription user"
+            )
             await User(user.user_id).update(subscribed=is_member)
 
     logger.info("Updating subscription information complete")

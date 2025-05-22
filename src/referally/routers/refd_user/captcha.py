@@ -11,6 +11,7 @@ from aiogram.types import (
     CallbackQuery
 )
 
+from ...log import UserLog
 from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
@@ -30,7 +31,7 @@ router.callback_query.filter(CaptchaState.CAPTCHA)
 async def send_captcha_message(
     message: Message,
     state: FSMContext,
-    lang_code: str = None
+    lang_code: str | None = None
 ) -> None:
     """
     Sending message with captcha in it
@@ -73,7 +74,7 @@ async def send_captcha_message(
 async def start_captcha_process(
     message: Message,
     state: FSMContext,
-    lang_code: str = None
+    lang_code: str | None = None
 ) -> None:
     """
     Starting captcha point
@@ -131,9 +132,16 @@ async def captcha_proceed_handler(
     if captcha_text == state_data["captcha_text"]:
         await callback.message.delete()
 
+        UserLog(
+            callback.from_user.id,
+            attempt=state_data["captcha_attempt"]
+        ).log("Passed captcha with")
+
         await state.clear()
         await state.set_state(ReffedUserState.MENU)
         await User(callback.from_user.id).update(captcha_passed=True)
+
+        logger.info(f"User have passed the captcha: {callback.from_user.id}")
 
         await send_channel_link(
             callback.message,
@@ -168,6 +176,10 @@ async def captcha_proceed_handler(
             callback.from_user.language_code
         )
         return
+
+    UserLog(callback.from_user.id, attempt=state_data["captcha_attempt"]).log(
+        "Can't pass the captcha"
+    )
 
     state_data["captcha_attempt"] += 1
     await state.set_data(state_data)

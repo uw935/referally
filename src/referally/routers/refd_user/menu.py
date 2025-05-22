@@ -13,8 +13,8 @@ router.message.filter(ReffedUserState.MENU)
 
 async def send_channel_link(
     message: Message,
-    state: FSMContext = None,
-    lang_code: str = None
+    state: FSMContext | None = None,
+    lang_code: str | None = None
 ) -> None:
     """
     Send link to channel for Refered Users

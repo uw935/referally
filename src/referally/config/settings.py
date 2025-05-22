@@ -25,18 +25,17 @@ logger.add(
     level="INFO",
     colorize=True,
     format=LOGGER_FORMAT,
-    catch=True
+    catch=True,
+    backtrace=True
 )
 logger.add(
     sink="./logs/bot.log",
-    level="INFO",
     rotation="1 MB",
     format=LOGGER_FORMAT,
     compression="zip",
-    delay=True,
-    catch=True
+    catch=True,
+    backtrace=True
 )
-
 
 load_dotenv(
     find_dotenv(
