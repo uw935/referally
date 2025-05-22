@@ -11,6 +11,7 @@ from aiogram.types import (
     CallbackQuery
 )
 
+from ...log import UserLog
 from ...database import User
 from ...captcha import Captcha
 from ...texts import TextFormatter
@@ -131,6 +132,11 @@ async def captcha_proceed_handler(
     if captcha_text == state_data["captcha_text"]:
         await callback.message.delete()
 
+        UserLog(
+            callback.from_user.id,
+            attempt=state_data["captcha_attempt"]
+        ).log("Passed captcha with")
+
         await state.clear()
         await state.set_state(ReffedUserState.MENU)
         await User(callback.from_user.id).update(captcha_passed=True)
@@ -170,6 +176,10 @@ async def captcha_proceed_handler(
             callback.from_user.language_code
         )
         return
+
+    UserLog(callback.from_user.id, attempt=state_data["captcha_attempt"]).log(
+        "Can't pass the captcha"
+    )
 
     state_data["captcha_attempt"] += 1
     await state.set_data(state_data)
