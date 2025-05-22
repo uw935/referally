@@ -1,6 +1,7 @@
 import time
 from dataclasses import dataclass
 
+from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import (
     func,
@@ -9,6 +10,7 @@ from sqlalchemy import (
     update
 )
 
+from ..log import UserLog
 from .models import UserModel
 from .session import connection
 
@@ -86,12 +88,15 @@ class User:
             )
         )
 
+        UserLog(self.user_id, username=username).log("New registration")
+
         await _db_session.commit()
         return True
 
     @connection
     async def update(
         self,
+        *,
         subscribed: bool | None = None,
         has_link: bool | None = None,
         username: str = "_none",
@@ -140,12 +145,18 @@ class User:
 
         if plus_referal_count is not None:
             to_update["referals_count"] = (
-                UserModel.referals_count
-                + plus_referal_count
+                UserModel.referals_count + plus_referal_count
             )
 
         if len(to_update) <= 0:
             return
+
+        UserLog(self.user_id, username=username).log(
+            f"Updating values: "
+            # Format will be 
+            # updating values: username=..., blocked=...
+            + ', '.join(f'{key}={value}' for key, value in to_update.items())
+        )
 
         await _db_session.execute(
             update(UserModel)
@@ -164,8 +175,8 @@ class AllUsers:
     @staticmethod
     @connection
     async def get(
-        limit: int = None,
-        offset: int = None,
+        limit: int | None = None,
+        offset: int | None = None,
         _db_session: AsyncSession = None
     ) -> list[UserModel]:
         """

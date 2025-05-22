@@ -8,7 +8,7 @@
         },
         "statistics": "📊 *Statistics*\n\nAll the users in affiliate program: *{users_count}*\nNew subscribers: \\+*{new_subscribers} in total*\n\n⭐️ *Rating \\(TOP\\-5\\)*\n{users_rating}",
         "user_view": {
-            "text": "👤 *User*\n\n*Telegram ID*: `{tgid}`\n*Username*: {username}\n*Registrated date*: `{reg_timestamp}`\n\n*Was referred*: {was_refered}\n*Can invite*: {has_link}\n*Subscribed to the channel*: {is_subscribed}\n\n*Invited*: \\+{referals_count} new subscribers"
+            "text": "👤 *User*\n\n*Telegram ID*: `{tgid}`\n*Username*: {username}\n*Registrated date*: `{reg_timestamp}`\n\n*Rating*: {rating}\n*Was referred*: {was_refered}\n*Can invite*: {has_link}\n*Subscribed to the channel*: {is_subscribed}\n\n*Invited*: \\+{referals_count} new subscribers"
         },
         "yes": "yes",
         "no": "no",

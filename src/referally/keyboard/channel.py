@@ -16,7 +16,7 @@ class SubscribeKeyboard(Keyboard):
     There is only one `Subscribe` button
     """
 
-    def __init__(self, lang_code: str, link: str = None) -> None:
+    def __init__(self, lang_code: str, link: str | None = None) -> None:
         """
         Initialization of subscribe keyboard
 

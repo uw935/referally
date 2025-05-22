@@ -11,7 +11,8 @@ from ...texts import TextFormatter
 from ...database import (
     User,
     AllUsers,
-    UserCount
+    UserCount,
+    UserRating
 )
 from ...keyboard import (
     create_button,
@@ -152,10 +153,13 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
         "admin:yes",
         callback.from_user.language_code
     ).text
+
     no_text = TextFormatter(
         "admin:no",
         callback.from_user.language_code
     ).text
+
+    rating = await UserRating.get(user.user_id)
 
     await callback.message.edit_text(
         TextFormatter(
@@ -163,6 +167,7 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
             callback.from_user.language_code,
             user_id=user.id,
             tgid=user.user_id,
+            rating=rating,
             username=f"@{user.username}" if user.username else no_text,
             reg_timestamp=datetime.fromtimestamp(user.created_at)
             .strftime("%d.%m.%y %H:%M"),
@@ -175,7 +180,7 @@ async def user_info_callback_handler(callback: CallbackQuery) -> None:
         reply_markup=AdminUserListKeyboard(
             user_id,
             user.blocked,
-            callback.from_user.id,
+            callback.from_user.language_code,
             users_list_back_index
         ).markup
     )

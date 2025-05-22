@@ -30,7 +30,7 @@ router.callback_query.filter(CaptchaState.CAPTCHA)
 async def send_captcha_message(
     message: Message,
     state: FSMContext,
-    lang_code: str = None
+    lang_code: str | None = None
 ) -> None:
     """
     Sending message with captcha in it
@@ -73,7 +73,7 @@ async def send_captcha_message(
 async def start_captcha_process(
     message: Message,
     state: FSMContext,
-    lang_code: str = None
+    lang_code: str | None = None
 ) -> None:
     """
     Starting captcha point
@@ -134,6 +134,8 @@ async def captcha_proceed_handler(
         await state.clear()
         await state.set_state(ReffedUserState.MENU)
         await User(callback.from_user.id).update(captcha_passed=True)
+
+        logger.info(f"User have passed the captcha: {callback.from_user.id}")
 
         await send_channel_link(
             callback.message,

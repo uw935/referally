@@ -58,7 +58,7 @@ async def do_nothing_callback_handler(_: CallbackQuery) -> None:
 async def start_handler(
     message: Message,
     state: FSMContext,
-    command: CommandObject = None
+    command: CommandObject | None = None
 ) -> None:
     """
     /start command handler

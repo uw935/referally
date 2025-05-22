@@ -12,7 +12,7 @@ class TextFormatter:
     Formatting, Markdowning & replacing args
     """
 
-    text: str = None
+    text: str
 
     def __init__(
         self,

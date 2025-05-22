@@ -10,6 +10,7 @@ from aiogram import (
     Dispatcher
 )
 
+from .log import UserLog
 from .database import User
 from .texts import TextFormatter
 from .routers.user.menu import send_menu_message
@@ -56,24 +57,19 @@ async def channel_member_observer(
     if user is None:
         return
 
-    if member.new_chat_member.status == ChatMemberStatus.MEMBER:
-        logger.info(f"New user just subscribed: {member.from_user.id}")
-    else:
-        logger.info(f"New user just unsubscribed: {member.from_user.id}")
+    is_subscribed = member.new_chat_member.status == ChatMemberStatus.MEMBER
+
+    UserLog(member.from_user.id, username=member.from_user.username).log(
+        "Subscribed" if is_subscribed else "Unsubscribed"
+    )
 
     await User(member.from_user.id).update(
-        subscribed=(
-            member.new_chat_member.status == ChatMemberStatus.MEMBER
-        ),
-        has_link=(
-            None
-            if member.new_chat_member.status != ChatMemberStatus.MEMBER
-            else True
-        )
+        subscribed=is_subscribed,
+        has_link=None if not is_subscribed else True
     )
 
     if user.joined_by_user_id is not None and user.captcha_passed:
-        if member.new_chat_member.status == ChatMemberStatus.MEMBER:
+        if is_subscribed:
             await User(user.joined_by_user_id).update(plus_referal_count=1)
 
             await dispatcher.fsm.get_context(
@@ -93,7 +89,7 @@ async def channel_member_observer(
             await send_menu_message(member, from_bot=True)
             return
 
-        # If bot didn't catch his subscription
+        # If bot didn't catch his subscription earlier
         # it seems user subscribed when he didn't passed the captcha
         if not user.subscribed:
             return
